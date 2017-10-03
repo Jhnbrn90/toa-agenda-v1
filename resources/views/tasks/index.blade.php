@@ -1,11 +1,7 @@
 @extends ('layouts.master')
 
-@section ('header')
-    <center>
-        <h4>Weekoverzicht</h4>
-        <h5>Week 40, 2017</h5>
-    </center>
-@endsection
+@include ('layouts.navbar')
+<br>
 
 @section('content')
         <center>

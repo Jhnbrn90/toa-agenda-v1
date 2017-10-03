@@ -15,9 +15,6 @@
 </head>
 <body>
 
-    @include ('layouts.navbar')
-    <br>
-
     @yield('content')
 
     <!-- Scripts -->
