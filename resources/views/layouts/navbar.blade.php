@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="{{ route('home') }}">TOA Agenda</a>
+  <a class="navbar-brand" href="/">TOA Agenda</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -8,15 +8,15 @@
     <ul class="navbar-nav mr-auto">
       @if(Auth::check())
       <li class="nav-item">
-        <a class="nav-link" href="/?datum={{ $date_back }}">Week terug</a>
+        <a class="nav-link" href="/datum/{{ $date_back }}">Week terug</a>
       </li>
       @endif
       <li class="nav-item">
-        <a class="nav-link" href="{{ route('home') }}">Huidige week <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="/">Huidige week <span class="sr-only">(current)</span></a>
       </li>
       @if(Auth::check())
       <li class="nav-item">
-        <a class="nav-link" href="/?datum={{ $date_forward }}">Week vooruit</a>
+        <a class="nav-link" href="/datum/{{ $date_forward }}">Week vooruit</a>
       </li>
       @endif
     </ul>

@@ -24,8 +24,8 @@ class CreateTasksTable extends Migration
             $table->string('title');
             $table->text('body');
             $table->string('type');
-            $table->integer('accepted');
-            $table->text('message');
+            $table->integer('accepted')->default("2");
+            $table->text('message')->nullable();
             $table->timestamps();
         });
     }

@@ -2,6 +2,7 @@
 
 @section('content')
 <br>
+<center><h4><a href="/">MLA TOA Agenda</a></h4></center>
 <div class="container">
     <div class="row">
         <div class="col-md-2">&nbsp;</div>

@@ -7,25 +7,21 @@ class Weekdays {
     public $startDate;
     public $weekdays_array = [];
 
-    public function __construct($startDate = '')
+    public function __construct(string $startDate)
     {
-        if(isset($startDate) && $startDate !== "") {
-            $this->startDate = Carbon::parse($startDate);
-        } else {
-            $this->startDate = new Carbon();
-        }
+            $this->startDate = $startDate;
     }
+
 
     public function getDaysofWeek()
     {
-        if($this->startDate->isWeekend()) {
+        if((Carbon::parse($this->startDate))->isWeekend()) {
             $start = Carbon::parse('next monday');
         } else {
-            $start = $this->startDate;
+            $start = Carbon::parse($this->startDate);
         }
 
-        $end = new Carbon($start);
-        $end->addWeekdays(4);
+        $end = (new Carbon($start))->addWeekdays(4);
 
         while($start <= $end) {
             $weekdays[] = new Carbon($start);
@@ -33,6 +29,17 @@ class Weekdays {
         }
 
         return $weekdays;
+    }
 
+    public function getPreviousWeek()
+    {
+        $previous = (Carbon::parse($this->startDate))->subWeek()->format('d-m-Y');
+        return $previous;
+    }
+
+    public function getNextWeek()
+    {
+        $next = (Carbon::parse($this->startDate))->addWeek()->format('d-m-Y');
+        return $next;
     }
 }
