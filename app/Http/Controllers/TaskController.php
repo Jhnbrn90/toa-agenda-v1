@@ -15,11 +15,12 @@ class TaskController extends Controller
         $this->middleware('auth');
     }
 
+
     public function index(string $date = 'now')
     {
+
         // determine which dates to show.
             $week = new Weekdays($date);
-
             $weekdays = $week->getDaysofWeek();
             $date_back = $week->getPreviousWeek();
             $date_forward = $week->getNextWeek();
@@ -29,6 +30,21 @@ class TaskController extends Controller
 
         // Separate tasks into resp. days and timeslots.
         return view('tasks.index', compact('timeslots', 'weekdays', 'date_back', 'date_forward'));
+    }
+
+    public function searchDate(Request $request)
+    {
+        $date = request('date');
+
+        if($date == "") {
+            $date = Carbon::now()->format('d-m-Y');
+        }
+
+        $this->validate(request(), [
+            'date' => 'date'
+        ]);
+
+        return redirect('/datum/'.$date);
     }
 
     public function create($date, $timeslot)

@@ -22,6 +22,7 @@ Route::get('/logout' , 'Auth\LoginController@logout');
 
 // main index routes
 Route::get('/datum/{date}', 'TaskController@index');
+Route::post('/date/search', 'TaskController@searchDate');
 
 // create new task routes.
 Route::get('/aanvraag/nieuw/{date}/{timeslot}', 'TaskController@create');

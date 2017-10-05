@@ -9,7 +9,7 @@ class Weekdays {
 
     public function __construct(string $startDate)
     {
-            $this->startDate = $startDate;
+        $this->startDate = $startDate;
     }
 
 
@@ -33,13 +33,23 @@ class Weekdays {
 
     public function getPreviousWeek()
     {
-        $previous = (Carbon::parse($this->startDate))->subWeek()->format('d-m-Y');
+        $previous = (Carbon::parse($this->startDate))->startOfWeek()->subWeek()->format('d-m-Y');
+
+        if($previous == (Carbon::parse('now'))->startOfWeek()->format('d-m-Y')) {
+            $previous = Carbon::parse('now')->format('d-m-Y');
+        }
+
         return $previous;
     }
 
     public function getNextWeek()
     {
-        $next = (Carbon::parse($this->startDate))->addWeek()->format('d-m-Y');
+        $next = (Carbon::parse($this->startDate))->startOfWeek()->addWeek()->format('d-m-Y');
+
+        if($next == (Carbon::parse('now'))->startOfWeek()->format('d-m-Y')) {
+            $next = Carbon::parse('now')->format('d-m-Y');
+        }
+
         return $next;
     }
 }
