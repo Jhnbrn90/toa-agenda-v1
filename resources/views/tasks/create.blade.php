@@ -55,9 +55,9 @@
           <div class="form-group col-md-4">
             <label for="type" class="col-form-label"><strong>Type</strong></label>
             <select class="form-control" id="type" name="type" aria-describedby="typeHelpBlock">
-                  <option >Voorbereiding</option>
-                  <option @if($notAvailable !== false) disabled @endif>Assistentie</option>
-                  <option>Anders</option>
+                  <option value="voorbereiding">Voorbereiding</option>
+                  <option value="assistentie" @if($notAvailable !== false) disabled @endif>Assistentie</option>
+                  <option value="anders">Anders</option>
             </select>
             <small id="typeHelpBlock" class="form-text text-muted">
               Kies voorbereiding / assistentie / etc / ..
