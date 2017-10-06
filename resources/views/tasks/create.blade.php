@@ -15,7 +15,7 @@
     </div>
   </div> -->
   <center>
-  <div class="card" style="width: 80%">
+  <div class="card" style="width: 80%; text-align:left;">
     <div class="card-header">
       <strong>Nieuwe Aanvraag</strong>
     </div>
@@ -34,8 +34,8 @@
 
         </div>
         <div class="form-row">
-          <div class="form-group col-md-1">&nbsp;</div>
-          <div class="form-group col-md-10">
+
+          <div class="form-group col-md-9">
             <label for="title" class="col-form-label"><strong>Titel</strong></label>
             <input type="text" class="form-control" id="title" name="title" placeholder="Titel" aria-describedby="titleHelpBlock" autofocus>
             <small id="titleHelpBlock" class="form-text text-muted">
@@ -52,7 +52,7 @@
         </div>
 
         <div class="form-row">
-          <div class="form-group col-md-4">
+          <div class="form-group col-md-3">
             <label for="type" class="col-form-label"><strong>Type</strong></label>
             <select class="form-control" id="type" name="type" aria-describedby="typeHelpBlock">
                   <option value="voorbereiding">Voorbereiding</option>
@@ -67,7 +67,7 @@
             <label for="class" class="col-form-label"><strong>Klas</strong></label>
             <input type="text" class="form-control" id="class" name="class" placeholder="3HD">
           </div>
-          <div class="form-group col-md-2">
+          <div class="form-group col-md-3">
             <label for="subject" class="col-form-label"><strong>Vak</strong></label>
             <input type="text" class="form-control" id="subject" name="subject" placeholder="Nask">
           </div>

@@ -65,7 +65,7 @@ class TaskController extends Controller
             'location' => 'required'
         ]);
 
-        auth()->user()->create(
+        auth()->user()->submit(
             new Task(request(['date', 'timetable_id', 'title', 'body', 'type', 'class', 'subject', 'location']))
         );
 

@@ -16,6 +16,16 @@ class UserTableSeeder extends Seeder
             'email' => 'jbraunnl@gmail.com',
             'shortname' => 'jbn',
             'password' => bcrypt('password'),
+            'is_admin' => false,
         ]);
+
+        DB::table('users')->insert([
+            'name' => 'Linda',
+            'email' => 'l.wijsman@msa.nl',
+            'shortname' => 'wil',
+            'password' => bcrypt('password'),
+            'is_admin' => true,
+        ]);
+
     }
 }
