@@ -40,6 +40,23 @@
   color: red;
 }
 
+#flash-message {
+  text-align: center;
+  z-index: 10;
+}
+
+select:required:invalid {
+  color: #999;
+}
+
+option[value=””][disabled] {
+  display: none;
+}
+
+option {
+  color: #000;
+}
+
 /*!
  * Bootstrap v4.0.0-beta (https://getbootstrap.com)
  * Copyright 2011-2017 The Bootstrap Authors

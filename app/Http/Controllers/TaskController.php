@@ -17,7 +17,7 @@ class TaskController extends Controller
 
 
     public function index(string $date = 'now')
-    {
+{
 
         // determine which dates to show.
             $week = new Weekdays($date);
@@ -51,13 +51,14 @@ class TaskController extends Controller
     {
         $timetable = Timetable::all();
         $notAvailable = Task::where('date', $date)->where('timetable_id', $timeslot)->pluck('type')->search('assistentie');
+
         return view('tasks.create', compact('date', 'timeslot', 'timetable', 'notAvailable'));
     }
 
     public function store(Request $request)
     {
         $this->validate(request(), [
-            'title' => 'required|max:20',
+            'title' => 'required|max:25',
             'body' => 'required',
             'type' => 'required',
             'class' => 'required',
@@ -70,9 +71,57 @@ class TaskController extends Controller
         );
 
         // redirect user with success flash
-        // session()->flash('message', 'Aanvraag succesvol ingediend');
+        session()->flash('message', 'Aanvraag succesvol ingediend');
 
-        return redirect('/');
+        // get the monday of the given date and load the correct week
+        $date = Carbon::parse(request('date'))->startOfWeek()->format('d-m-Y');
+
+        return redirect('/datum/'.$date);
+    }
+
+    public function edit(Task $task)
+    {
+        if($task->user_id !== auth()->id()) {
+            return redirect('/');
+        }
+
+        $timetable = Timetable::all();
+        $notAvailable = Task::where('date', $task->date)->where('timetable_id', $task->timetable_id)->pluck('type')->search('assistentie');
+
+        return view('tasks.edit', compact('task', 'timetable', 'notAvailable'));
+    }
+
+    public function update(Request $request, Task $task)
+    {
+
+        if(auth()->id() !== $task->user_id) {
+            return redirect('/');
+        }
+
+        $this->validate(request(), [
+            'title' => 'required|max:25',
+            'body' => 'required',
+            'type' => 'required',
+            'class' => 'required',
+            'subject' => 'required',
+            'location' => 'required'
+        ]);
+
+        $task->title = request('title');
+        $task->body = request('body');
+        $task->type = request('type');
+        $task->class = request('class');
+        $task->subject = request('subject');
+        $task->location = request('location');
+        $task->save();
+
+        $date = Carbon::parse(request('date'))->startOfWeek()->format('d-m-Y');
+
+        // redirect user with success flash
+        session()->flash('message', 'Wijzigingen zijn opgeslagen.');
+
+        return redirect('/datum/'.$date);
+
     }
 
 }

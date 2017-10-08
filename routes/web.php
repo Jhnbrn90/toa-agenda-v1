@@ -29,4 +29,6 @@ Route::get('/aanvraag/nieuw/{date}/{timeslot}', 'TaskController@create');
 Route::post('/aanvraag/nieuw', 'TaskController@store');
 
 // edit task routes.
+Route::get('/aanvraag/{task}/bewerken', 'TaskController@edit');
+Route::patch('/aanvraag/{task}', 'TaskController@update');
 

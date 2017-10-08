@@ -4,10 +4,11 @@
 @include ('layouts.navbar')
 <br>
 
-    <center>
-        <h4><a href="/datum/{{ $date_back }}" class="btn btn-outline-primary pointer"><strong><<</strong></a> &nbsp; Week {{ $weekdays[0]->formatLocalized('%U') }}, {{ $weekdays[0]->formatLocalized('%Y') }} &nbsp; <a href="/datum/{{ $date_forward }}" class="btn btn-outline-primary pointer"><strong>>></strong></a></h4>
+    <center style="padding-bottom:15px;">
+        <h4><a href="/datum/{{ $date_back }}" id="back_button" class="btn btn-outline-primary pointer"><strong><<</strong></a> &nbsp; Week {{ $weekdays[0]->formatLocalized('%U') }}, {{ $weekdays[0]->formatLocalized('%Y') }} &nbsp; <a href="/datum/{{ $date_forward }}" class="btn btn-outline-primary pointer"><strong>>></strong></a></h4>
     </center>
-<br>
+
+@include ('layouts.flash')
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-1">&nbsp;</div>
@@ -52,7 +53,7 @@
                                             {{ $result->body }} <br>
                                             <small>{{ $result->class }} | {{ $result->location }} | {{ $result->user->name }} | {{ $result->type }}</small>
                                             @if(auth()->user()->id === $result->user->id)
-                                                <br><small><a class="text-danger" href="/aanvraag/bewerken/{{ $result->id }}">Bewerken</a></small>
+                                                <br><small><a class="text-danger" href="/aanvraag/{{ $result->id }}/bewerken">Bewerken</a></small>
                                             @endif
                                         </div>
                                         <hr>
@@ -90,6 +91,8 @@
          $(".card-title").mousedown(function(e){ e.preventDefault(); });
          $(".title").mousedown(function(e){ e.preventDefault(); });
 
+
         });
     </script>
 @endsection
+

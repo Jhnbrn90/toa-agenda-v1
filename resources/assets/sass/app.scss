@@ -35,6 +35,21 @@
     color: red;
 }
 
+#flash-message {
+    text-align:center;
+    z-index: 10;
+}
+
+select:required:invalid {
+color: #999;
+}
+option[value=””][disabled] {
+display: none;
+}
+option {
+color: #000;
+}
+
 // Fontsz
 @import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
 
