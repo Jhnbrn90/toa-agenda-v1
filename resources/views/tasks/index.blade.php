@@ -19,12 +19,13 @@
                 <div class="sticky-top">
                     <center>
                         <h3>{{ ucfirst($weekday->formatLocalized('%A')) }}</h3>
-                             {{ $weekday->formatLocalized('%e %h') }}
+                            {{ $weekday->formatLocalized('%e %h') }}
                     </center>
                 </div>
 
             @for($i = 0; $i < count($timeslots); $i++)
                 <div class="card">
+                    <a name="{{ $weekday->format('d-m-Y') }}H{{ $timeslots[$i]->school_hour }}"></a>
                     <div class="card-body">
                         <h4 class="card-title"><strong>{{ $timeslots[$i]->school_hour }}<sup>e</sup> uur</strong></h4>
                         <h6 class="card-subtitle mb-2 text-muted">

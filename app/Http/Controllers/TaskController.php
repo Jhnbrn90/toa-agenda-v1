@@ -74,9 +74,11 @@ class TaskController extends Controller
         session()->flash('message', 'Aanvraag succesvol ingediend');
 
         // get the monday of the given date and load the correct week
-        $date = Carbon::parse(request('date'))->startOfWeek()->format('d-m-Y');
+        $date = Carbon::parse(request('date'))->format('d-m-Y');
+        $time = request('timetable_id');
+        $startdate = Carbon::parse(request('date'))->startOfWeek()->format('d-m-Y');
 
-        return redirect('/datum/'.$date);
+        return redirect('/datum/'.$startdate.'#'.$date.'H'.$time);
     }
 
     public function edit(Task $task)
