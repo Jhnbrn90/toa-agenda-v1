@@ -32,3 +32,9 @@ Route::post('/aanvraag/nieuw', 'TaskController@store');
 Route::get('/aanvraag/{task}/bewerken', 'TaskController@edit');
 Route::patch('/aanvraag/{task}', 'TaskController@update');
 
+// admin routes.
+Route::prefix('admin')->group(function () {
+    Route::get('/', 'AdminController@index');
+    Route::get('/tasks/chart/today', 'AdminController@chart');
+});
+

@@ -18,7 +18,11 @@
           </form>
         </div>
           <span clas="navbar-text" style="margin-right:10px;">
-            Welkom,&nbsp;<strong> {{ Auth::user()->name }} </strong>&nbsp;(<a href="/logout">Uitloggen</a>)
+            Welkom,&nbsp;<strong> {{ Auth::user()->name }} </strong>&nbsp; (
+            @admin
+            <a href="/admin">Beheren</a> |
+            @endadmin
+            <a href="/logout">Uitloggen</a> )
           </span>
   </div>
 </nav>

@@ -36,4 +36,10 @@ class User extends Authenticatable
     {
         $this->tasks()->save($task);
     }
+
+    public function isAdmin()
+    {
+        return User::find(auth()->user()->id)
+            ->is_admin;
+    }
 }

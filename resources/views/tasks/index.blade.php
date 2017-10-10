@@ -6,6 +6,7 @@
 
     <center style="padding-bottom:15px;">
         <h4><a href="/datum/{{ $date_back }}" id="back_button" class="btn btn-outline-primary pointer"><strong><<</strong></a> &nbsp; Week {{ $weekdays[0]->formatLocalized('%U') }}, {{ $weekdays[0]->formatLocalized('%Y') }} &nbsp; <a href="/datum/{{ $date_forward }}" class="btn btn-outline-primary pointer"><strong>>></strong></a></h4>
+        <a href="/">Huidige week</a>
     </center>
 
 @include ('layouts.flash')
