@@ -18,6 +18,12 @@ class AppServiceProvider extends ServiceProvider
             date_default_timezone_set('Europe/Amsterdam');
             Carbon::setLocale('nl');
 
+            view()->composer('layouts.navbar', function($view) {
+                $view->with('thisYear', Carbon::now()->format('Y'))
+                     ->with('prevYear', Carbon::now()->subYear()->format('Y'))
+                     ->with('nextYear', Carbon::now()->addYear()->format('Y'));
+            });
+
             \Blade::if('admin', function() {
                 return auth()->check() && auth()->user()->isAdmin();
             });

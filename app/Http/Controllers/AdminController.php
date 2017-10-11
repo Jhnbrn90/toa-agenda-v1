@@ -3,10 +3,12 @@
 
 namespace App\Http\Controllers;
 
-use JavaScript;
 use App\Task;
+use App\User;
+use JavaScript;
 use App\Timetable;
 use Carbon\Carbon;
+use App\Classes\Weekdays;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -31,13 +33,11 @@ class AdminController extends Controller
         $today = Carbon::parse('now')->format('d-m-Y');
         $timeslots = Timetable::pluck('school_hour');
         $taskByHour = [];
-        for($i = 0; $i < count($timeslots); $i++) {
-           $taskByHour[$timeslots[$i]] = Task::where('date', $today)->where('timetable_id', $timeslots[$i])->count();
-        }
+            for($i = 0; $i < count($timeslots); $i++) {
+               $taskByHour[$timeslots[$i]] = Task::where('date', $today)->where('timetable_id', $timeslots[$i])->count();
+            }
 
-        $formatted_labels = "[".implode(', ', array_keys($taskByHour))."]";
         $unformatted_labels = array_keys($taskByHour);
-        $formatted_data = "[".implode(', ', array_values($taskByHour))."]";
         $unformatted_data = array_values($taskByHour);
 
         JavaScript::put([
@@ -45,16 +45,60 @@ class AdminController extends Controller
             'data_var'     =>   $unformatted_data
         ]);
 
+        // get weekoverview of tasks.
+        $weekdayArray = [];
+        $formattedWeekdays = [];
+        $weekdayArrayFormatted = [];
+
+        $week = new Weekdays($today);
+        $weekdays = $week->getDaysofWeek();
+            foreach($weekdays as $weekday) {
+                $weekdayArray[] = $weekday->formatLocalized('%a');
+                $formattedWeekdays[] = $weekday->format('d-m-Y');
+            }
+
+            foreach($formattedWeekdays as $formattedWeekday) {
+               $weekdayArrayFormatted[] = Task::where('date', $formattedWeekday)->count();
+            }
+
+        JavaScript::put([
+            'week_labels_var'   =>   $weekdayArray,
+            'week_data_var'     =>   $weekdayArrayFormatted
+        ]);
+
         return view('admin.index', compact('tasks', 'waitingTasks'));
     }
 
-    public function chart()
+    public function show(Task $task)
     {
-        $result = Task::where('accepted', '=', 1)
-                            ->where('date', Carbon::parse('now')->format('d-m-Y'))
-                            ->orderBy('timetable_id', 'ASC')
-                            ->get();
+            if( ! auth()->user()->isAdmin()) {
+                return redirect('/');
+            }
+            $today = Carbon::parse('now')->format('d-m-Y');
 
-                return response()->json($result);
+            $timeslots = Timetable::all();
+
+        return view('admin.showtask', compact('task', 'timeslots', 'today'));
+
+    }
+
+    public function createUser()
+    {
+        if( ! auth()->user()->isAdmin()) {
+            return redirect('/');
+        }
+
+        return view('admin.newuser');
+
+    }
+
+    public function showUsers()
+    {
+        if( ! auth()->user()->isAdmin()) {
+            return redirect('/');
+        }
+
+        $users = User::all();
+        return view('admin.showusers', compact('users'));
     }
 }

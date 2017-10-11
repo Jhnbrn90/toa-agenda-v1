@@ -15,6 +15,12 @@
             <div class="col-md-1">&nbsp;</div>
 
             @foreach($weekdays as $weekday)
+                @php
+                $activeLink = false;
+                    if($weekday >= $today) {
+                        $activeLink = true;
+                    }
+                @endphp
             <div class="col-xs-12 col-md-2">
                 <div class="sticky-top">
                     <center>
@@ -54,9 +60,12 @@
                                         <div id="desc{{ $result->id }}" class="highlight" style="font-size:0.9rem; display:none;">
                                             {{ $result->body }} <br>
                                             <small>{{ $result->class }} | {{ $result->location }} | {{ $result->user->name }} | {{ $result->type }}</small>
-                                            @if(auth()->user()->id === $result->user->id)
-                                                <br><small><a class="text-danger" href="/aanvraag/{{ $result->id }}/bewerken">Bewerken</a></small>
+                                            @if($activeLink == true)
+                                                @if(auth()->user()->id === $result->user->id)
+                                                    <br><small><a class="text-danger" href="/aanvraag/{{ $result->id }}/bewerken">Bewerken</a></small>
+                                                @endif
                                             @endif
+
                                         </div>
                                         <hr>
 
@@ -65,8 +74,10 @@
                                     @else
                                     <p class="card-text">Beschikbaar</p>
                                 @endif
+                                @if($activeLink == true)
+                                    <center><a href="/aanvraag/nieuw/{{ $weekday->format('d-m-Y') }}/{{ $timeslots[$i]->school_hour }}" class="card-link">Inplannen</a></center>
+                                @endif
 
-                                <center><a href="/aanvraag/nieuw/{{ $weekday->format('d-m-Y') }}/{{ $timeslots[$i]->school_hour }}" class="card-link">Inplannen</a></center>
                         </div> <!-- card text -->
                     </div> <!-- card body -->
                 </div> <!-- card -->

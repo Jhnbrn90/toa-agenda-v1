@@ -34,7 +34,9 @@ Route::patch('/aanvraag/{task}', 'TaskController@update');
 
 // admin routes.
 Route::prefix('admin')->group(function () {
-    Route::get('/', 'AdminController@index');
-    Route::get('/tasks/chart/today', 'AdminController@chart');
+    Route::get('/', 'AdminController@index')->name('admin_index');
+    Route::get('task/{task}', 'AdminController@show');
+    Route::get('users/create', 'AdminController@createUser')->name('admin_create_user');
+    Route::get('users/manage', 'AdminController@showUsers')->name('admin_show_users');
 });
 

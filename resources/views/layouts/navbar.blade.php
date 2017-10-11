@@ -11,10 +11,15 @@
       </li>
     </ul>
         <div style="margin-right: 20px;">
-          <form method="POST" action="/date/search" class="form-inline my-1 my-lg-0">
+          <form method="POST" action="/date/search" class="form-inline my-1 my-lg-0" style="font-family: sans-serif;">
             {{ csrf_field() }}
-            <input name="date" class="form-control mr-sm-1" style="width: 120px; font-family: sans-serif" type="text" placeholder="19-06-2017" aria-label="Zoeken" autofocus>
-            <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Ga</button>
+            <input name="date-DayMonth" class="form-control mr-sm-1" style="width: 85px;" type="text" placeholder="19-6" aria-label="Zoeken" autofocus>
+            <select class="form-control mr-sm-1" name="date-Year" style="width: 75px;">
+              <option>{{ $prevYear }}</option>
+              <option selected>{{ $thisYear }}</object>
+              <option>{{ $nextYear }}</option>
+            </select>
+            <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Naar datum</button>
           </form>
         </div>
           <span clas="navbar-text" style="margin-right:10px;">

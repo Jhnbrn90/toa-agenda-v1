@@ -19,6 +19,9 @@ class TaskController extends Controller
     public function index(string $date = 'now')
 {
 
+        // today
+        $today = Carbon::parse('now')->toDateString();
+
         // determine which dates to show.
             $week = new Weekdays($date);
             $weekdays = $week->getDaysofWeek();
@@ -29,12 +32,12 @@ class TaskController extends Controller
         $timeslots = Timetable::all();
 
         // Separate tasks into resp. days and timeslots.
-        return view('tasks.index', compact('timeslots', 'weekdays', 'date_back', 'date_forward'));
+        return view('tasks.index', compact('timeslots', 'weekdays', 'date_back', 'date_forward', 'today'));
     }
 
     public function searchDate(Request $request)
     {
-        $date = request('date');
+        $date = request('date-DayMonth').'-'.request('date-Year');
 
         if($date == "") {
             $date = Carbon::now()->format('d-m-Y');
