@@ -1,8 +1,11 @@
 <?php
 
+
 namespace App\Http\Controllers;
 
+use JavaScript;
 use App\Task;
+use App\Timetable;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -23,6 +26,24 @@ class AdminController extends Controller
 
         // fetch all unapproved tasks.
         $waitingTasks = Task::where('accepted', '=', 2)->orderBy('created_at', 'desc')->get();
+
+        // get all the tasks of today
+        $today = Carbon::parse('now')->format('d-m-Y');
+        $timeslots = Timetable::pluck('school_hour');
+        $taskByHour = [];
+        for($i = 0; $i < count($timeslots); $i++) {
+           $taskByHour[$timeslots[$i]] = Task::where('date', $today)->where('timetable_id', $timeslots[$i])->count();
+        }
+
+        $formatted_labels = "[".implode(', ', array_keys($taskByHour))."]";
+        $unformatted_labels = array_keys($taskByHour);
+        $formatted_data = "[".implode(', ', array_values($taskByHour))."]";
+        $unformatted_data = array_values($taskByHour);
+
+        JavaScript::put([
+            'labels_var'   =>   $unformatted_labels,
+            'data_var'     =>   $unformatted_data
+        ]);
 
         return view('admin.index', compact('tasks', 'waitingTasks'));
     }

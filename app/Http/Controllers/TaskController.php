@@ -75,7 +75,13 @@ class TaskController extends Controller
 
         // get the monday of the given date and load the correct week
         $date = Carbon::parse(request('date'))->format('d-m-Y');
-        $time = request('timetable_id');
+
+        if(request('timetable_id') == 1) {
+            $time = 1;
+        } else {
+            $time = request('timetable_id')-1;
+        }
+
         $startdate = Carbon::parse(request('date'))->startOfWeek()->format('d-m-Y');
 
         return redirect('/datum/'.$startdate.'#'.$date.'H'.$time);

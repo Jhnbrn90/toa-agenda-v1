@@ -15,7 +15,9 @@
 
                   <div class="row">
                       <div class="col-md-5">
+                        <div class="container">
                           <h4>Accepteren</h4>
+
                           <ul>
                             @foreach($waitingTasks as $task)
                                 <li>
@@ -29,23 +31,41 @@
                             @endforeach
                           </ul>
 
+                        </div>
+
                       </div>
                       <div class="col-md-7">
-                        <canvas id="myChart"></canvas>
+
+                        <div class="row">
+                          <div class="col-md-12">
+                            <h3>Vandaag</h3>
+                            <canvas id="myChart" width="200" height="75"></canvas>
+                          </div>
+                        </div>
+
+                        <br><br>
+
+                        <div class="row">
+                          <div class="col-md-12">
+                            <h3>Weekoverzicht</h3>
+                          </div>
+                        </div>
+
                       </div>
                   </div>
 
             </main>
           </div>
         </div>
-
-
 @endsection
+
+@include ('admin.footer')
 
 @section ('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
 
 <script>
+    console.log(data_var);
     var ctx = document.getElementById('myChart').getContext('2d');
     var chart = new Chart(ctx, {
         // The type of chart we want to create
@@ -53,17 +73,38 @@
 
         // The data for our dataset
         data: {
-            labels: ["1", "2", "3", "4", "5", "6", "7"],
+            labels: labels_var,
             datasets: [{
-                label: "Overzicht vandaag",
+                label: "Taken",
                 backgroundColor: 'rgb(255, 99, 132)',
                 borderColor: 'rgb(255, 99, 132)',
-                data: [0, 10, 5, 2, 20, 30, 45, 10, 2],
+                data: data_var,
             }]
         },
 
         // Configuration options go here
-        options: {}
+        options: {
+          scales: {
+                yAxes: [{
+                  ticks: {
+                    stepSize: 1
+                  },
+                  scaleLabel: {
+                    display: true,
+                    labelString: 'Aantal taken'
+                  }
+                }],
+                xAxes: [{
+                  scaleLabel: {
+                    display: true,
+                    labelString: 'Lesuur'
+                  }
+                }]
+              },
+          legend: {
+            display: false
+          }
+        }
     });
 </script>
 @endsection
