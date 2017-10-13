@@ -9,6 +9,7 @@ use JavaScript;
 use App\Timetable;
 use Carbon\Carbon;
 use App\Classes\Weekdays;
+use App\Classes\TaskSorter;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -29,44 +30,20 @@ class AdminController extends Controller
         // fetch all unapproved tasks.
         $waitingTasks = Task::where('accepted', '=', 2)->orderBy('created_at', 'desc')->get();
 
-        // get all the tasks of today
-        $today = Carbon::parse('now')->format('d-m-Y');
-        $timeslots = Timetable::pluck('school_hour');
-        $taskByHour = [];
-            for($i = 0; $i < count($timeslots); $i++) {
-               $taskByHour[$timeslots[$i]] = Task::where('date', $today)->where('timetable_id', $timeslots[$i])->count();
-            }
+        // fetch info for the bar graphs
+        $TasksByHour = (new TaskSorter())->tasksByHour();
+        $TasksByDay = (new TaskSorter())->tasksByWeekday();
 
-        $unformatted_labels = array_keys($taskByHour);
-        $unformatted_data = array_values($taskByHour);
+        // put into variables
+        $daytasks = [];
+        $daytasks['values'] = "['".implode('\', \'', array_values($TasksByHour))."']";
+        $daytasks['labels'] = "['".implode('\', \'', array_keys($TasksByHour))."']";
 
-        JavaScript::put([
-            'labels_var'   =>   $unformatted_labels,
-            'data_var'     =>   $unformatted_data
-        ]);
+        $weektasks = [];
+        $weektasks['values'] = "['".implode('\', \'', array_values($TasksByDay))."']";
+        $weektasks['labels'] = "['".implode('\', \'', array_keys($TasksByDay))."']";
 
-        // get weekoverview of tasks.
-        $weekdayArray = [];
-        $formattedWeekdays = [];
-        $weekdayArrayFormatted = [];
-
-        $week = new Weekdays($today);
-        $weekdays = $week->getDaysofWeek();
-            foreach($weekdays as $weekday) {
-                $weekdayArray[] = $weekday->formatLocalized('%a');
-                $formattedWeekdays[] = $weekday->format('d-m-Y');
-            }
-
-            foreach($formattedWeekdays as $formattedWeekday) {
-               $weekdayArrayFormatted[] = Task::where('date', $formattedWeekday)->count();
-            }
-
-        JavaScript::put([
-            'week_labels_var'   =>   $weekdayArray,
-            'week_data_var'     =>   $weekdayArrayFormatted
-        ]);
-
-        return view('admin.index', compact('tasks', 'waitingTasks'));
+        return view('admin.index', compact('tasks', 'waitingTasks', 'daytasks', 'weektasks'));
     }
 
     public function show(Task $task)

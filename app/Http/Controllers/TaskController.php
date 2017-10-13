@@ -135,4 +135,20 @@ class TaskController extends Controller
 
     }
 
+    public function destroy(Task $task)
+    {
+        if(auth()->id() !== $task->user_id) {
+            return redirect('/');
+        }
+
+        $date = Carbon::parse($task->date)->startOfWeek()->format('d-m-Y');
+        $task->delete();
+
+        // redirect user with success flash
+        session()->flash('message', 'De aanvraag is verwijderd.');
+
+        return redirect('/datum/'.$date);
+
+    }
+
 }

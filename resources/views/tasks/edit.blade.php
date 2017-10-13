@@ -76,6 +76,13 @@
                <button type="submit" class="btn btn-success">Opslaan</button>
              </form>
 
+               <div class="pull-right">
+                <form action="/aanvraag/{{ $task->id }}" method="POST">
+                  {{ csrf_field() }}
+                  {{ method_field('DELETE') }}
+                  <button type="submit" class="btn btn-danger">Verwijderen</button>
+              </div>
+
         </div>
 
     </div>

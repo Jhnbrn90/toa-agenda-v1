@@ -31,6 +31,7 @@ Route::post('/aanvraag/nieuw', 'TaskController@store');
 // edit task routes.
 Route::get('/aanvraag/{task}/bewerken', 'TaskController@edit');
 Route::patch('/aanvraag/{task}', 'TaskController@update');
+Route::delete('/aanvraag/{task}', 'TaskController@destroy');
 
 // admin routes.
 Route::prefix('admin')->group(function () {
