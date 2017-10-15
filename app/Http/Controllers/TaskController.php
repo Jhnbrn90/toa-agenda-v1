@@ -124,6 +124,7 @@ class TaskController extends Controller
         $task->class = request('class');
         $task->subject = request('subject');
         $task->location = request('location');
+        $task->accepted = 2;
         $task->save();
 
         $date = Carbon::parse(request('date'))->startOfWeek()->format('d-m-Y');

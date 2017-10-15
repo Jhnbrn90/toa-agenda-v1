@@ -21,7 +21,7 @@ class TaskSorter {
     public function tasksByHour()
     {
         for($i = 0; $i < count($this->timeslots); $i++) {
-           $this->tasksByHour[$this->timeslots[$i]] = Task::where('date', $this->today)->where('timetable_id', $this->timeslots[$i])->count();
+           $this->tasksByHour[$this->timeslots[$i]] = Task::where('accepted', 1)->where('date', $this->today)->where('timetable_id', $this->timeslots[$i])->count();
         }
 
         return $this->tasksByHour;
@@ -36,7 +36,7 @@ class TaskSorter {
 
         foreach($weekdays as $weekday) {
             // calculate the tasks for this day
-            $numberOfTasks = Task::where('date', $weekday->format('d-m-Y'))->count();
+            $numberOfTasks = Task::where('accepted', 1)->where('date', $weekday->format('d-m-Y'))->count();
 
             // save values to array
             $TasksByDay[$weekday->formatLocalized('%a')] = $numberOfTasks;

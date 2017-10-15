@@ -16,18 +16,19 @@
 
                        <div class="card">
                            <div class="card-header">
-                               <strong>{{ $task->timetable->school_hour }}e uur</strong>
+                               <strong>{{ ucfirst($task->date->formatLocalized('%A')) }} {{ $task->timetable->school_hour }}e uur</strong>
                                ({{ $task->timetable->starttime }} - {{ $task->timetable->endtime }})
+                               <br>
+                               Datum: {{ $task->date->formatLocalized('%e %B %Y') }}
                                <br>
                                Titel: <strong>{{ $task->title }}</strong>
                            </div>
                            <div class="card-body">
-
                                {{ $task->body }}
                            </div>
                            <div class="card-footer">
                                <small class="text-muted">
-                                   <strong>Datum:</strong> {{ $task->date }} |
+                                   <strong>Datum:</strong> {{ $task->date->format('d-m-Y') }} |
                                    <strong>Docent:</strong> {{ $task->user->name }} ({{ $task->user->shortname }}) |
                                    <strong>Klas:</strong> {{ $task->class }}
                                </small>
@@ -36,12 +37,14 @@
                        <br>
                        <div class="card">
                            <div class="card-body">
-                               <form>
+                               <form method="POST" action="/admin/task/{{ $task->id }}">
+                                {{ csrf_field() }}
+                                {{ method_field('PATCH') }}
                                    <h3>Bericht: </h3>
-                                   <textarea class="form-control" rows="5" autofocus></textarea>
+                                   <textarea name="message" class="form-control" rows="5" autofocus>{{ $task->message }}</textarea>
                                    <br>
-                                   <button type="submit" class="btn btn-success">Accepteren</button>
-                                   <button type="submit" class="btn btn-danger">Weigeren</button>
+                                   <button name="submit" type="submit" class="btn btn-success" value="accept">Accepteren</button>
+                                   <button name="submit" type="submit" class="btn btn-danger" value="deny">Weigeren</button>
                                </form>
                            </div>
                        </div>
@@ -57,7 +60,7 @@
                             )
                                 <ul class="list-group">
                                     <li class="list-group-item list-group-item-info">
-                                       <strong> {{ $timeslot->school_hour }}e uur ({{ $timeslot->starttime }} - {{ $timeslot->endtime }}) </strong>
+                                       <strong>{{ $timeslot->school_hour }}e uur ({{ $timeslot->starttime }} - {{ $timeslot->endtime }}) </strong>
                                     </li>
                                 @foreach($results as $result)
                                     <li class="list-group-item">
@@ -76,10 +79,12 @@
                                     </li>
                                 @endforeach
                                 </ul>
-
                             @endif
-
                         @endforeach
+
+                        @if($results->count() === 0)
+                          <center><strong>Geen andere taken vandaag</strong></center>
+                        @endif
                     </div>
 
                 </div>

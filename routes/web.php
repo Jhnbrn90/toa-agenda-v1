@@ -35,8 +35,18 @@ Route::delete('/aanvraag/{task}', 'TaskController@destroy');
 
 // admin routes.
 Route::prefix('admin')->group(function () {
+    // load dashboard.
     Route::get('/', 'AdminController@index')->name('admin_index');
+
+    // settings page
+    Route::get('settings', 'AdminController@settings')->name('admin_settings');
+
+    // task routes
     Route::get('task/{task}', 'AdminController@show');
+    Route::get('tasks/all', 'AdminController@showAllTasks')->name('admin_tasks_all');
+    Route::patch('task/{task}', 'AdminController@updateTask');
+
+    // user routes
     Route::get('users/create', 'AdminController@createUser')->name('admin_create_user');
     Route::get('users/manage', 'AdminController@showUsers')->name('admin_show_users');
 });
