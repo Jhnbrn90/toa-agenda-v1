@@ -17,9 +17,8 @@ class TaskController extends Controller
 
 
     public function index(string $date = 'now')
-{
-
-        // today
+    {
+       // today
         $today = Carbon::parse('now')->toDateString();
 
         // determine which dates to show.
@@ -52,6 +51,14 @@ class TaskController extends Controller
 
     public function create($date, $timeslot)
     {
+
+        $today = Carbon::parse('now')->toDateString();
+
+        if(Carbon::parse($date) < Carbon::parse($today)) {
+            return redirect('/');
+        }
+
+
         $timetable = Timetable::all();
         $notAvailable = Task::where('date', $date)->where('timetable_id', $timeslot)->pluck('type')->search('assistentie');
 
@@ -93,6 +100,12 @@ class TaskController extends Controller
     public function edit(Task $task)
     {
         if($task->user_id !== auth()->id()) {
+            return redirect('/');
+        }
+
+        $today = Carbon::parse('now')->toDateString();
+
+        if(Carbon::parse($task->date) < Carbon::parse($today)) {
             return redirect('/');
         }
 

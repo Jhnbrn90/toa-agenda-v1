@@ -66,13 +66,13 @@
                 {{ csrf_field() }}
                 <div class="row">
                     <div class="col-md-2">
-                        <input type="text" value="" name="school_hour" class="form-control" style="width: 60%">
+                        <input type="text" value="{{ old('school_hour') }}" name="school_hour" class="form-control" style="width: 60%">
                     </div>
                     <div class="col-md-2">
-                        <input type="time" name="starttime" class="form-control">
+                        <input type="time" value="{{ old('starttime') }}" name="starttime" class="form-control">
                     </div>
                     <div class="col-md-2">
-                        <input type="time" name="endtime" class="form-control">
+                        <input type="time" value="{{ old('endtime') }}" name="endtime" class="form-control">
                     </div>
 
                     <div class="col-md-2">

@@ -12,7 +12,7 @@
             <main class="col-sm-9 ml-sm-auto col-md-10 pt-3" role="main">
                 <h1>Aanvraag</h1>
                 <div class="row">
-                    <div class="col-md-7">
+                    <div class="col-md-9">
 
                        <div class="card">
                            <div class="card-header">
@@ -51,40 +51,29 @@
 
                     </div>
 
-                    <div class="col-md-5">
-                        @foreach($timeslots as $timeslot)
-                            @if(
-                            ( $results = $timeslot->tasks->where('date', $today)->where('accepted', '>=', 1) )
-                            AND
-                            $results->count() !== 0
-                            )
-                                <ul class="list-group">
-                                    <li class="list-group-item list-group-item-info">
-                                       <strong>{{ $timeslot->school_hour }}e uur ({{ $timeslot->starttime }} - {{ $timeslot->endtime }}) </strong>
-                                    </li>
-                                @foreach($results as $result)
-                                    <li class="list-group-item">
-                                        <span class="title title-status-{{ $result->accepted }}" t="{{ $result->id }}">
-                                            {{ $result->title }}
-                                        </span>
-                                        ({{ $result->type }})
-
-                                        <div id="desc{{ $result->id }}" class="highlight" style="font-size:0.9rem; display:none;">
-                                            {{ $result->body }} <br>
-                                            <small>
-                                                {{ $result->class }} | {{ $result->location }} | {{ $result->user->name }} | {{ $result->type }}
-                                            </small>
-                                        </div>
-
-                                    </li>
-                                @endforeach
-                                </ul>
-                            @endif
+                    <div class="col-md-3">
+                      <center><h4> {{ ucfirst($task->date->formatLocalized('%A %e %B')) }} </h4></center>
+                      <br>
+                      @if($acceptedTasks->count() === 0)
+                       <center> <strong>Geen andere taken.</strong> </center>
+                      @else
+                        @foreach($acceptedTasks as $task)
+                          <div class="card text-white bg-dark mb-3" style="max-width: 20rem">
+                            <h5 class="card-header display-6">
+                              {{ $task->timetable->school_hour }}e uur
+                            </h5>
+                            <div class="card-body">
+                              <h6 class="card-subtitle mb-2 text-muted">
+                              {{ $task->timetable->starttime }} - {{ $task->timetable->endtime }}
+                              </h6>
+                              <p class="card-text">
+                               <h6> {{ $task->title }} </h6>
+                               {{ $task->body }}
+                              </p>
+                            </div>
+                          </div>
                         @endforeach
-
-                        @if($results->count() === 0)
-                          <center><strong>Geen andere taken vandaag</strong></center>
-                        @endif
+                      @endif
                     </div>
 
                 </div>

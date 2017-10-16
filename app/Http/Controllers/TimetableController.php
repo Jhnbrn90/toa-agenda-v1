@@ -44,7 +44,7 @@ class TimetableController extends Controller
         }
 
         $validated = $request->validate([
-            'school_hour'   => 'required',
+            'school_hour'   => 'required|integer',
             'starttime'     => 'required',
             'endtime'       => 'required'
         ]);

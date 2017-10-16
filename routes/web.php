@@ -13,6 +13,8 @@
 
 Auth::routes();
 
+Route::view('/test', 'test');
+
 // index routes
 Route::get('/', 'TaskController@index')->name('home');
 Route::get('/home', 'TaskController@index')->name('home');

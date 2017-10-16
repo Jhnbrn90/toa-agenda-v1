@@ -71,3 +71,7 @@
           </div>
         </div>
 @endsection
+
+@section('scripts')
+  <script type="text/javascript" src="{{ asset('js/_vue.js') }}"></script>
+@endsection

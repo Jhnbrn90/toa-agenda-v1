@@ -49,11 +49,13 @@ class AdminController extends Controller
                 return redirect('/');
             }
 
+            $acceptedTasks = Task::where('date', $task->date)->where('accepted', 1)->get();
+
             $today = Carbon::parse('now')->format('d-m-Y');
             $task->date = Carbon::parse($task->date);
             $timeslots = Timetable::all();
 
-        return view('admin.showtask', compact('task', 'timeslots', 'today'));
+        return view('admin.showtask', compact('task', 'acceptedTasks', 'timeslots', 'today'));
 
     }
 
