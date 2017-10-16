@@ -120,9 +120,4 @@ class AdminController extends Controller
         return view('admin.showusers', compact('users'));
     }
 
-    public function settings()
-    {
-        $timeslots = Timetable::all();
-        return view('admin.settings', compact('timeslots'));
-    }
 }

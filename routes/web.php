@@ -39,7 +39,10 @@ Route::prefix('admin')->group(function () {
     Route::get('/', 'AdminController@index')->name('admin_index');
 
     // settings page
-    Route::get('settings', 'AdminController@settings')->name('admin_settings');
+    Route::get('settings', 'TimetableController@show')->name('admin_settings');
+    Route::post('timetable/new', 'TimetableController@store');
+    Route::patch('timetable/edit/{timeslot}', 'TimetableController@update');
+    Route::delete('timetable/edit/{timeslot}', 'TimetableController@destroy');
 
     // task routes
     Route::get('task/{task}', 'AdminController@show');
