@@ -10,6 +10,10 @@ class TimetableController extends Controller
     public function show()
     {
 
+        if( ! auth()->user()->isAdmin()) {
+            return redirect('/');
+        }
+
         $timeslots = Timetable::all();
         return view('admin.settings', compact('timeslots'));
 
@@ -17,6 +21,10 @@ class TimetableController extends Controller
 
     public function update(Request $request, Timetable $timeslot)
     {
+        if( ! auth()->user()->isAdmin()) {
+            return redirect('/');
+        }
+
         $validated = $request->validate([
             'starttime' => 'required',
             'endtime' => 'required'
@@ -31,6 +39,10 @@ class TimetableController extends Controller
 
     public function store(Request $request)
     {
+        if( ! auth()->user()->isAdmin()) {
+            return redirect('/');
+        }
+
         $validated = $request->validate([
             'school_hour'   => 'required',
             'starttime'     => 'required',
@@ -48,6 +60,10 @@ class TimetableController extends Controller
 
     public function destroy(Timetable $timeslot)
     {
+        if( ! auth()->user()->isAdmin()) {
+            return redirect('/');
+        }
+
         $timeslot->delete();
         session()->flash('message', 'Lesuur verwijderd.');
 
