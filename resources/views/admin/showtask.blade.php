@@ -58,18 +58,16 @@
                        <center> <strong>Geen andere taken.</strong> </center>
                       @else
                         @foreach($acceptedTasks as $task)
-                          <div class="card text-white bg-dark mb-3" style="max-width: 20rem">
-                            <h5 class="card-header display-6">
-                              {{ $task->timetable->school_hour }}e uur
+                          <div class="card border-info mb-3" style="max-width: 20rem">
+                            <h5 class="card-header display-6" style="background: rgba(0, 128, 128, 0.50)">
+                              {{ $task->timetable->school_hour }}e uur <small>({{ $task->timetable->starttime }} - {{ $task->timetable->endtime }})</small>
                             </h5>
-                            <div class="card-body">
-                              <h6 class="card-subtitle mb-2 text-muted">
-                              {{ $task->timetable->starttime }} - {{ $task->timetable->endtime }}
-                              </h6>
+                            <div class="card-body" style="background: rgba(211, 211, 211, 0.5)">
                               <p class="card-text">
                                <h6> {{ $task->title }} </h6>
                                {{ $task->body }}
                               </p>
+                              Lokaal: {{ $task->location }}
                             </div>
                           </div>
                         @endforeach
