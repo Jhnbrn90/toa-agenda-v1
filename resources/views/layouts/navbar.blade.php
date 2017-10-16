@@ -8,6 +8,11 @@
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
         <!-- <a class="nav-link" href="/">Huidige week</a> -->
+        @if(Route::currentRouteName() == "home" OR Route::currentRouteName() == "taskDate")
+          <a href="/filter" class="btn btn-outline-warning" title="Laat enkel door mij aangevraagde verzoeken zien.">Mijn overzicht</a>
+        @elseif(Route::currentRouteName() == "taskFilter" OR Route::currentRouteName() == "taskFilterDate")
+          <a href="/" class="btn btn-warning" title="Laat alles zien.">Mijn overzicht</a>
+        @endif
       </li>
     </ul>
         <div style="margin-right: 20px;">

@@ -19,11 +19,15 @@ Route::view('/test', 'test');
 Route::get('/', 'TaskController@index')->name('home');
 Route::get('/home', 'TaskController@index')->name('home');
 
+// filter routes
+Route::get('/filter', 'TaskController@filter')->name('taskFilter');
+Route::get('/filter/{date}', 'TaskController@filter')->name('taskFilterDate');
+
 // custom logout route
 Route::get('/logout' , 'Auth\LoginController@logout');
 
 // main index routes
-Route::get('/datum/{date}', 'TaskController@index');
+Route::get('/datum/{date}', 'TaskController@index')->name('taskDate');
 Route::post('/date/search', 'TaskController@searchDate');
 
 // create new task routes.

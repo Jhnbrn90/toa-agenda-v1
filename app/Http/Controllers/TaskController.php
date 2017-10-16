@@ -49,6 +49,25 @@ class TaskController extends Controller
         return redirect('/datum/'.$date);
     }
 
+public function filter(string $date = 'now')
+    {
+       // today
+        $today = Carbon::parse('now')->toDateString();
+
+        // determine which dates to show.
+            $week = new Weekdays($date);
+            $weekdays = $week->getDaysofWeek();
+            $date_back = $week->getPreviousWeek();
+            $date_forward = $week->getNextWeek();
+
+        // Retrieve timeslots.
+        $timeslots = Timetable::all();
+        $tasks = Task::all();
+
+        // Separate tasks into resp. days and timeslots.
+    return view('tasks.filter', compact('timeslots', 'weekdays', 'date_back', 'date_forward', 'today', 'tasks'));
+    }
+
     public function create($date, $timeslot)
     {
 
