@@ -18,7 +18,7 @@
         <div style="margin-right: 20px;">
           <form method="POST" action="/date/search" class="form-inline my-1 my-lg-0" style="font-family: sans-serif;">
             {{ csrf_field() }}
-            <input name="date-DayMonth" class="form-control mr-sm-1" style="width: 90px;" type="text" placeholder="19-6" aria-label="Zoeken" autofocus>
+            <input name="date-DayMonth" class="form-control mr-sm-1" style="width: 90px;" type="text" placeholder="19-6" aria-label="Zoeken">
             <select class="form-control mr-sm-1" name="date-Year">
               <option>{{ $prevYear }}</option>
               <option selected>{{ $thisYear }}</object>

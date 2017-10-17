@@ -39,6 +39,10 @@ Route::get('/aanvraag/{task}/bewerken', 'TaskController@edit');
 Route::patch('/aanvraag/{task}', 'TaskController@update');
 Route::delete('/aanvraag/{task}', 'TaskController@destroy');
 
+// absence notification
+Route::get('/afwezig/{date}/{timeslot}', 'AbsenceController@create');
+Route::post('/afwezig', 'AbsenceController@store');
+
 // admin routes.
 Route::prefix('admin')->group(function () {
     // load dashboard.

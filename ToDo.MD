@@ -4,6 +4,7 @@
 
 ### General
 * E-mail functionality (via queued jobs)
+* Give the TOA (admin) the option to mark days as absent
 
 ### Agenda view
 * User can create a task that spans over multiple classes

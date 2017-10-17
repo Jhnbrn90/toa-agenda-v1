@@ -30,6 +30,29 @@
                 </div>
 
             @for($i = 0; $i < count($timeslots); $i++)
+            @php
+                $absence = $absences
+                ->where('date', $weekday->format('d-m-Y'))
+                ->where('school_hour', $timeslots[$i]->school_hour);
+            @endphp
+
+            @if($absence->count() > 0)
+                <div class="card border-danger mb-3">
+                    <a name="{{ $weekday->format('d-m-Y') }}H{{ $timeslots[$i]->school_hour }}"></a>
+                    <div class="card-body">
+                        <h4 class="card-title"><strong>{{ $timeslots[$i]->school_hour }}<sup>e</sup> uur</strong></h4>
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            {{ $timeslots[$i]->starttime }} - {{ $timeslots[$i]->endtime }}
+                        </h6>
+                        <div class="card-text">
+                            <span class="text-danger">Afwezig</span>
+                            <div class="highlight">
+                                {{ $absence->first()->message }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @else
                 <div class="card">
                     <a name="{{ $weekday->format('d-m-Y') }}H{{ $timeslots[$i]->school_hour }}"></a>
                     <div class="card-body">
@@ -76,11 +99,15 @@
                                 @endif
                                 @if($activeLink == true)
                                     <center><a href="/aanvraag/nieuw/{{ $weekday->format('d-m-Y') }}/{{ $timeslots[$i]->school_hour }}" class="card-link">Inplannen</a></center>
+                                    @admin
+                                    <center><a href="/afwezig/{{ $weekday->format('d-m-Y') }}/{{ $timeslots[$i]->school_hour }}" class="card-link text-danger">Afwezig melden</a></center>
+                                    @endadmin
                                 @endif
 
                         </div> <!-- card text -->
                     </div> <!-- card body -->
                 </div> <!-- card -->
+                @endif
             @endfor
             </div>
             @endforeach

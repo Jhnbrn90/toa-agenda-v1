@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Task;
+use App\Absence;
 use App\Timetable;
 use Carbon\Carbon;
 use App\Classes\Weekdays;
@@ -30,8 +31,11 @@ class TaskController extends Controller
         // Retrieve timeslots.
         $timeslots = Timetable::all();
 
+        // Retrieve asbence
+        $absences = Absence::all();
+
         // Separate tasks into resp. days and timeslots.
-        return view('tasks.index', compact('timeslots', 'weekdays', 'date_back', 'date_forward', 'today'));
+        return view('tasks.index', compact('timeslots', 'weekdays', 'date_back', 'date_forward', 'today', 'absences'));
     }
 
     public function searchDate(Request $request)
