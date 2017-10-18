@@ -43,9 +43,9 @@ Route::delete('/aanvraag/{task}', 'TaskController@destroy');
 Route::get('/afwezig/{date}/{timeslot}', 'AbsenceController@create');
 Route::post('/afwezig', 'AbsenceController@store');
 
-// admin routes.
+// admin routes
 Route::prefix('admin')->group(function () {
-    // load dashboard.
+    // dashboard
     Route::get('/', 'AdminController@index')->name('admin_index');
 
     // settings page
@@ -53,6 +53,14 @@ Route::prefix('admin')->group(function () {
     Route::post('timetable/new', 'TimetableController@store');
     Route::patch('timetable/edit/{timeslot}', 'TimetableController@update');
     Route::delete('timetable/edit/{timeslot}', 'TimetableController@destroy');
+
+    // absence routes
+    Route::get('absence', 'AbsenceController@index')->name('admin_absence_index');
+    Route::get('absence/create', 'AbsenceController@create_admin')->name('admin_absence_create');
+    Route::post('absence', 'AbsenceController@store_admin');
+    Route::get('absence/edit/{absence}', 'AbsenceController@edit');
+    Route::patch('absence/{absence}', 'AbsenceController@update');
+    Route::delete('absence/{absence}/delete', 'AbsenceController@destroy');
 
     // task routes
     Route::get('task/{task}', 'AdminController@show');

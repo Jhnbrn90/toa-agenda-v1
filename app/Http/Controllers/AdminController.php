@@ -25,7 +25,7 @@ class AdminController extends Controller
         $tasks = Task::all();
 
         // fetch all unapproved tasks.
-        $waitingTasks = Task::where('accepted', '=', 2)->orderBy('date', 'asc')->get();
+        $waitingTasks = Task::where('accepted', '=', 2)->orderBy('id', 'desc')->get();
 
         // fetch info for the bar graphs
         $TasksByHour = (new TaskSorter())->tasksByHour();

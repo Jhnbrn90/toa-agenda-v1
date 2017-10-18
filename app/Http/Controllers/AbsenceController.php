@@ -2,12 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Absence;
 use App\Timetable;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class AbsenceController extends Controller
 {
+
+    public function __construct() {
+        $this->middleware('auth');
+
+    }
+
     public function create($date, $timeslot)
     {
         $carbonDate = Carbon::parse($date);
@@ -39,5 +46,88 @@ class AbsenceController extends Controller
 
         return redirect('/datum/'.$startdate.'#'.$date.'H'.$time);
 
+    }
+
+    public function index()
+    {
+        if( ! auth()->user()->isAdmin()) {
+            return redirect('/');
+        }
+
+        $absence_table = Absence::orderBy('id', 'DESC')->get();
+
+        return view('absence.index', compact('absence_table'));
+
+    }
+
+    public function create_admin()
+    {
+        if( ! auth()->user()->isAdmin()) {
+            return redirect('/');
+        }
+
+        // pass through the timetable
+        $timeslots = Timetable::all();
+
+        return view('absence.create_admin', compact('timeslots'));
+
+    }
+
+    public function store_admin(Request $request)
+    {
+        $request->validate([
+            'date' => 'required'
+        ]);
+
+        // transform date to Carbon instance
+        $date = Carbon::parse($request->date)->format('d-m-Y');
+
+        foreach($request->class_hour as $timeslot) {
+
+            Absence::create([
+                'message'       => $request->message,
+                'date'          => $date,
+                'school_hour'   => $timeslot
+            ]);
+
+        }
+
+        session()->flash('message', 'Absentie verwerkt.');
+
+        return redirect('/admin/absence');
+
+    }
+
+    public function edit(Absence $absence)
+    {
+        $date = Carbon::parse($absence->date)->format('Y-m-d');
+        return view('absence.edit', compact('absence', 'date'));
+    }
+
+    public function update(Request $request, Absence $absence)
+    {
+        $request->validate([
+            'date'          => 'required',
+            'school_hour'   => 'required'
+        ]);
+
+        $absence->date = request('date');
+        $absence->school_hour = request('school_hour');
+        $absence->message = request('message');
+        $absence->save();
+
+        session()->flash('message', 'Absentie aangepast.');
+
+        return redirect('/admin/absence');
+
+    }
+
+    public function destroy(Absence $absence)
+    {
+        $absence->delete();
+
+        session()->flash('message', 'Absentie verwijderd.');
+
+        return redirect('/admin/absence');
     }
 }

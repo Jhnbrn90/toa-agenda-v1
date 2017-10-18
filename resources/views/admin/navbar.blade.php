@@ -6,10 +6,22 @@
 
   <div class="collapse navbar-collapse" id="navbarsExampleDefault">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item {{Route::currentRouteName() == "admin_index" ? 'active' : ''}}">
+      <li class="nav-item
+      {{Route::currentRouteName() == "admin_index" ? 'active' : ''}}
+      {{Route::currentRouteName() == "admin_tasks_all" ? 'active' : ''}}
+      ">
         <a class="nav-link" href="/admin">Overzicht <span class="sr-only">(current)</span></a>
       </li>
-      <li class="nav-item {{Route::currentRouteName() == "admin_create_user" ? 'active' : ''}}">
+      <li class="nav-item
+        {{Route::currentRouteName() == "admin_absence_index" ? 'active' : ''}}
+        {{Route::currentRouteName() == "admin_absence_create" ? 'active' : ''}}
+        ">
+        <a class="nav-link" href="/admin/absence">Absenties</a>
+      </li>
+      <li class="nav-item
+      {{Route::currentRouteName() == "admin_create_user" ? 'active' : ''}}
+      {{Route::currentRouteName() == "admin_show_users" ? 'active' : ''}}
+      ">
         <a class="nav-link" href="/admin/users/create">Gebruikers</a>
       </li>
       <li class="nav-item {{Route::currentRouteName() == "admin_settings" ? 'active' : ''}}">
