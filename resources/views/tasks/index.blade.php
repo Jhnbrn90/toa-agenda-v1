@@ -30,13 +30,22 @@
                 </div>
 
             @for($i = 0; $i < count($timeslots); $i++)
+
             @php
+
                 $absence = $absences
-                ->where('date', $weekday->format('d-m-Y'))
-                ->where('school_hour', $timeslots[$i]->school_hour);
+                ->where('date', $weekday->format('d-m-Y'));
+
+                if($absence->count() > 0) {
+                    $string = $absence->pluck('school_hour')->first();
+                    $absenceArray = explode(', ', $string);
+                } else {
+                $absenceArray = [];
+            }
+
             @endphp
 
-            @if($absence->count() > 0)
+            @if( in_array($timeslots[$i]->school_hour, $absenceArray) )
                 <div class="card border-danger mb-3">
                     <a name="{{ $weekday->format('d-m-Y') }}H{{ $timeslots[$i]->school_hour }}"></a>
                     <div class="card-body">

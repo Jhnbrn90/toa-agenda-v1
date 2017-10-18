@@ -22,10 +22,17 @@
                   </thead>
                   <tbody>
                       @foreach ($absence_table as $absence)
+
                       <form method="POST" action="/admin/absence/{{ $absence->id }}/delete">
                         <tr>
                           <td> {{ $absence->date }} </td>
-                          <td> {{ $absence->school_hour }} </td>
+                          <td>
+                            <ul>
+                            @foreach (explode(', ', $absence->school_hour) as $school_hour)
+                              <li>{{ $school_hour }}</li>
+                            @endforeach
+                            </ul>
+                          </td>
                           <td> {{ $absence->message }} </td>
                           <td> <a href="/admin/absence/edit/{{ $absence->id }}" class="btn btn-primary text-white">Bewerken</a>
 

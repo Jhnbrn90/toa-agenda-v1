@@ -27,7 +27,7 @@
                       @foreach ($timeslots as $timeslot)
                         <div class="form-check form-check-inline">
                           <label class="form-check-label">
-                            <input name="class_hour[]" class="form-check-input class_hour" type="checkbox" value="{{ $timeslot->school_hour }}"> {{ $timeslot->school_hour }}
+                            <input name="school_hour[]" class="form-check-input class_hour" type="checkbox" value="{{ $timeslot->school_hour }}"> {{ $timeslot->school_hour }}
                           </label>
                         </div>
                       @endforeach

@@ -30,7 +30,17 @@ class AbsenceController extends Controller
             'school_hour' => 'required'
         ]);
 
-        \App\Absence::create($validated);
+        $date = Carbon::parse(request('date'))->format('d-m-Y');
+
+        // check if there is already absence on this day
+        $absence = Absence::where('date', $date)->first();
+
+        if($absence !== null && $absence->count() > 0) {
+            $absence->school_hour = $absence->school_hour.", ".$request->school_hour;
+            $absence->save();
+        } else {
+            Absence::create($validated);
+        }
 
 
         if(request('school_hour') == 1) {
@@ -39,7 +49,6 @@ class AbsenceController extends Controller
             $time = request('school_hour')-1;
         }
 
-        $date = Carbon::parse(request('date'))->format('d-m-Y');
         $startdate = Carbon::parse(request('date'))->startOfWeek()->format('d-m-Y');
 
         session()->flash('message', 'Absentie verwerkt.');
@@ -82,15 +91,13 @@ class AbsenceController extends Controller
         // transform date to Carbon instance
         $date = Carbon::parse($request->date)->format('d-m-Y');
 
-        foreach($request->class_hour as $timeslot) {
+        $school_hours = implode(', ', $request->school_hour);
 
-            Absence::create([
-                'message'       => $request->message,
-                'date'          => $date,
-                'school_hour'   => $timeslot
-            ]);
-
-        }
+        Absence::create([
+            'date'          => $date,
+            'message'       => $request->message,
+            'school_hour'   => $school_hours
+        ]);
 
         session()->flash('message', 'Absentie verwerkt.');
 
