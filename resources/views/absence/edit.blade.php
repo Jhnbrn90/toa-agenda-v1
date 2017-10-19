@@ -22,9 +22,20 @@
                       <input type="date" name="date" class="form-control" value="{{ $date }}" autofocus required>
                     </div>
                     <div class="col-md-1">&nbsp;</div>
-                    <div class="col-md-1">
-                      <strong>Lesuur:</strong> <br>
-                      <input type="text" class="form-control" name="school_hour" value="{{ $absence->school_hour }}" required>
+                    <div class="col-md-6">
+                      <strong>Lesuren:</strong> <br>
+                      @foreach ($timeslots as $timeslot)
+                        <div class="form-check form-check-inline">
+                          <label class="form-check-label">
+                            <input name="school_hour[]" class="form-check-input class_hour" type="checkbox" value="{{ $timeslot->school_hour }}"
+                            @if (in_array($timeslot->school_hour, $absenceArray))
+                              checked
+                            @endif
+                            > {{ $timeslot->school_hour }}
+                          </label>
+                        </div>
+                      @endforeach
+                      <!-- <input type="text" class="form-control" name="school_hour" value="{{ $absence->school_hour }}" required> -->
                     </div>
                   </div>
 

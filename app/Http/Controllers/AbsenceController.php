@@ -108,18 +108,23 @@ class AbsenceController extends Controller
     public function edit(Absence $absence)
     {
         $date = Carbon::parse($absence->date)->format('Y-m-d');
-        return view('absence.edit', compact('absence', 'date'));
+
+        $timeslots = Timetable::all();
+
+        $absenceArray = explode(', ', $absence->school_hour);
+
+        return view('absence.edit', compact('absence', 'date', 'timeslots', 'absenceArray'));
     }
 
     public function update(Request $request, Absence $absence)
     {
         $request->validate([
-            'date'          => 'required',
-            'school_hour'   => 'required'
+            'date'          => 'required'
         ]);
 
-        $absence->date = request('date');
-        $absence->school_hour = request('school_hour');
+        $absence_hours = implode(', ', $request->school_hour);
+        $absence->date = Carbon::parse(request('date'))->format('d-m-Y');
+        $absence->school_hour = $absence_hours;
         $absence->message = request('message');
         $absence->save();
 

@@ -24,7 +24,7 @@
                                Titel: <strong>{{ $task->title }}</strong>
                            </div>
                            <div class="card-body">
-                               {{ $task->body }}
+                               @markdown($task->body)
                            </div>
                            <div class="card-footer">
                                <small class="text-muted">

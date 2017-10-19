@@ -7,6 +7,7 @@ use App\Absence;
 use App\Timetable;
 use Carbon\Carbon;
 use App\Classes\Weekdays;
+use App\Mail\NewTaskRequest;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -99,9 +100,29 @@ public function filter(string $date = 'now')
             'location' => 'required'
         ]);
 
-        auth()->user()->submit(
+        $user = auth()->user();
+
+        $task = $user->submit(
             new Task(request(['date', 'timetable_id', 'title', 'body', 'type', 'class', 'subject', 'location']))
         );
+
+        $actionURL = env('APP_URL').'/admin/task/'.$task->id;
+
+        // $title = $task->title;
+        // $body = $task->body;
+        // $type = $request->type;
+        // $class = $request->class;
+        // $course = $request->subject;
+        // $location = $request->location;
+
+        // format these variables to readable strings
+            //$timetable = Timetable::where('id', $request->timetable_id)->first(); // "1e uur (08:30 - 09:30)"
+            //$time = $timetable->school_hour."e uur (".$timetable->starttime." - ".$timetable->endtime.")";
+
+        //$date = ucfirst(Carbon::parse($request->date)->formatLocalized("%A %e %B"));
+
+        \Mail::to($user)
+        ->later(5, new NewTaskRequest($user, $task, $actionURL));
 
         // redirect user with success flash
         session()->flash('message', 'Aanvraag succesvol ingediend');

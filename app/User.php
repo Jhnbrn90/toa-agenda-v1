@@ -35,6 +35,7 @@ class User extends Authenticatable
     public function submit(Task $task)
     {
         $this->tasks()->save($task);
+        return $task;
     }
 
     public function isAdmin()
