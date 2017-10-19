@@ -16,7 +16,7 @@ class Absence extends Model
         $date = Carbon::parse($date)->format('d-m-Y');
         $absence = Absence::where('date', $date)->first();
         if($absence == null) {
-            return '[]';
+            return [];
         }
 
         return explode(', ', $absence->school_hour);
