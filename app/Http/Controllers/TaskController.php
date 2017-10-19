@@ -82,6 +82,11 @@ public function filter(string $date = 'now')
             return redirect('/');
         }
 
+        $absenceArray = Absence::getArray($date);
+
+        if(in_array($timeslot, $absenceArray)) {
+            return redirect('/');
+        }
 
         $timetable = Timetable::all();
         $notAvailable = Task::where('date', $date)->where('timetable_id', $timeslot)->pluck('type')->search('assistentie');
@@ -108,21 +113,14 @@ public function filter(string $date = 'now')
 
         $actionURL = env('APP_URL').'/admin/task/'.$task->id;
 
-        // $title = $task->title;
-        // $body = $task->body;
-        // $type = $request->type;
-        // $class = $request->class;
-        // $course = $request->subject;
-        // $location = $request->location;
-
         // format these variables to readable strings
-            //$timetable = Timetable::where('id', $request->timetable_id)->first(); // "1e uur (08:30 - 09:30)"
-            //$time = $timetable->school_hour."e uur (".$timetable->starttime." - ".$timetable->endtime.")";
+            $timetable = Timetable::where('id', $request->timetable_id)->first(); // "1e uur (08:30 - 09:30)"
+            $time = $timetable->school_hour."e uur (".$timetable->starttime." - ".$timetable->endtime.")";
 
-        //$date = ucfirst(Carbon::parse($request->date)->formatLocalized("%A %e %B"));
+            $day = ucfirst(Carbon::parse($request->date)->formatLocalized("%A %e %B"));
 
-        \Mail::to($user)
-        ->later(5, new NewTaskRequest($user, $task, $actionURL));
+        \Mail::to(env('APP_ADMIN_EMAIL'))
+        ->later(5, new NewTaskRequest($user, $task, $actionURL, $time, $day));
 
         // redirect user with success flash
         session()->flash('message', 'Aanvraag succesvol ingediend');

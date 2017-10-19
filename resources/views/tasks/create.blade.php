@@ -32,7 +32,7 @@
 
           <div class="form-group col-md-5">
             <label for="title" class="col-form-label"><strong>Titel</strong></label>
-            <input type="text" class="form-control" id="title" name="title" placeholder="Titel" aria-describedby="titleHelpBlock" maxlength="25" autofocus required>
+            <input type="text" class="form-control" id="title" name="title" placeholder="Titel" aria-describedby="titleHelpBlock" maxlength="25" value="{{ old('title') }}" autofocus required>
             <small id="titleHelpBlock" class="form-text text-muted">
               Maximaal 25 tekens (<span class="countdown"></span>/25)
             </small>
@@ -41,8 +41,8 @@
 
         <div class="form-row">
           <div class="form-group col-md-12">
-            <label for="description" class="col-form-label"><strong>Omschrijving</strong></label>
-            <textarea name="body" id="body" class="form-control" rows="3" placeholder="Beschijving van het practicum: proefopstelling, lesmateriaal, etc.&#10;Bij assistentie: geef ook aan om welk lesdeel het gaat (hele les, eerste deel, tweede deel)" required></textarea>
+            <label for="body" class="col-form-label"><strong>Omschrijving</strong></label>
+            <textarea name="body" id="body" class="form-control" rows="3" placeholder="Beschijving van het practicum: proefopstelling, lesmateriaal, etc.&#10;Bij assistentie: geef ook aan om welk lesdeel het gaat (hele les, eerste deel, tweede deel)" required>{{ old('body') }}</textarea>
           </div>
         </div>
 
@@ -61,15 +61,15 @@
           </div>
           <div class="form-group col-md-2">
             <label for="class" class="col-form-label"><strong>Klas</strong></label>
-            <input type="text" class="form-control" id="class" name="class" placeholder="3HD" required>
+            <input type="text" class="form-control" id="class" name="class" placeholder="3HD" value="{{ old('class') }}" required>
           </div>
           <div class="form-group col-md-4">
             <label for="subject" class="col-form-label"><strong>Vak</strong></label>
-            <input type="text" class="form-control" id="subject" name="subject" placeholder="Natuurkunde, Scheikunde, etc." required>
+            <input type="text" class="form-control" id="subject" name="subject" placeholder="Natuurkunde, Scheikunde, etc." value="{{ old('subject') }}" required>
           </div>
           <div class="form-group col-md-3">
             <label for="location" class="col-form-label"><strong>Locatie</strong></label>
-            <input type="text" class="form-control" id="location" name="location" placeholder="B0-1" required>
+            <input type="text" class="form-control" id="location" name="location" placeholder="B0-1" value="{{ old('location') }}" required>
           </div>
         </div>
         <button type="submit" class="btn btn-primary">Verzenden</button>

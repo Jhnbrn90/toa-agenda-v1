@@ -16,13 +16,16 @@ class NewTaskRequest extends Mailable
     public $user;
     public $task;
     public $actionURL;
+    public $time;
+    public $day;
 
-
-    public function __construct(User $user, Task $task, $actionURL)
+    public function __construct(User $user, Task $task, $actionURL, $time, $day)
     {
         $this->user = $user;
         $this->task = $task;
         $this->actionURL = $actionURL;
+        $this->time = $time;
+        $this->day = $day;
     }
 
     /**
@@ -33,7 +36,8 @@ class NewTaskRequest extends Mailable
     public function build()
     {
         return $this
-        ->subject('[Nieuw] Nieuw verzoek')
+        ->subject('[Nieuw verzoek] '.$this->task->title)
+        ->from($this->user->email, $this->user->name)
         ->markdown('emails.newtask');
     }
 }
