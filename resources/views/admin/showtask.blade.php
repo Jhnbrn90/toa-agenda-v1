@@ -23,9 +23,7 @@
                                <br>
                                Titel: <strong>{{ $task->title }}</strong>
                            </div>
-                           <div class="card-body">
-                               @markdown($task->body)
-                           </div>
+                           <div class="card-body">@markdown {{ $task->body }} @endmarkdown</div>
                            <div class="card-footer">
                                <small class="text-muted">
                                    <strong>Datum:</strong> {{ $task->date->format('d-m-Y') }} |
