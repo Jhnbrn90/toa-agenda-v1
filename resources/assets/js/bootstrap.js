@@ -1,4 +1,6 @@
 
+window.SimpleMDE = require('simplemde');
+
 window._ = require('lodash');
 
 /**

@@ -90,7 +90,9 @@
                                             <strong> {{ $result->title }} </strong>
                                         </span>
                                         <div id="desc{{ $result->id }}" class="highlight" style="font-size:0.9rem; display:none;">
-                                            {{ $result->body }} <br>
+                                            @markdown
+                                                {{ $result->body }}
+                                            @endmarkdown
                                             <small>{{ $result->class }} | {{ $result->location }} | {{ $result->user->name }} | {{ $result->type }}</small>
                                             @if($activeLink == true)
                                                 @if(auth()->user()->id === $result->user->id)

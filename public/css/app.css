@@ -12298,3 +12298,7 @@ a.text-dark:hover {
   clip: auto;
 }
 
+.CodeMirror {
+  max-height: 150px;
+}
+

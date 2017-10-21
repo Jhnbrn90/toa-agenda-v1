@@ -1,5 +1,10 @@
 @extends ('layouts.master')
 
+@section('styles')
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"> -->
+<link rel="stylesheet" href="{{ URL::asset('css/simplemde.css') }}">
+@endsection
+
 @section ('content')
 <br>
 
@@ -15,7 +20,7 @@
 
      @include ('layouts.errors')
 
-      <form method="POST" action="/aanvraag/nieuw" autocomplete="off">
+      <form method="POST" action="/aanvraag/nieuw" autocomplete="off" enctype="multipart/form-data">
         {{ csrf_field() }}
         <input type="hidden" name="date" id="date" value="{{ $date }}">
         <input type="hidden" name="timetable_id" id="timetable_id" value="{{ $timeslot }}">
@@ -42,7 +47,14 @@
         <div class="form-row">
           <div class="form-group col-md-12">
             <label for="body" class="col-form-label"><strong>Omschrijving</strong></label>
-            <textarea name="body" id="body" class="form-control" rows="3" placeholder="Beschijving van het practicum: proefopstelling, lesmateriaal, etc.&#10;Bij assistentie: geef ook aan om welk lesdeel het gaat (hele les, eerste deel, tweede deel)" required>{{ old('body') }}</textarea>
+            <textarea name="body" id="body" class="form-control" placeholder="Beschijving van het practicum: proefopstelling, lesmateriaal, etc.&#10;Bij assistentie: geef ook aan om welk lesdeel het gaat (hele les, eerste deel, tweede deel)">{{ old('body') }}</textarea>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-12">
+            <label for="upload" class="col-form-label"><strong>Bestand bijvoegen</strong> (optioneel)</label><br>
+            <input type="file" name="file[]" class="form-control-file" multiple>
           </div>
         </div>
 
@@ -82,6 +94,11 @@
 
 @section('scripts')
 <script>
+  var simplemde = new SimpleMDE({
+    spellChecker: false,
+    hideIcons: ["image", "heading", "link"],
+  });
+
   jQuery(document).ready(function($) {
       updateCountdown();
       $('#title').change(updateCountdown);

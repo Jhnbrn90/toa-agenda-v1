@@ -18,14 +18,17 @@ class NewTaskRequest extends Mailable
     public $actionURL;
     public $time;
     public $day;
+    public $filepath;
 
-    public function __construct(User $user, Task $task, $actionURL, $time, $day)
+
+    public function __construct(User $user, Task $task, $actionURL, $time, $day, $filepath)
     {
         $this->user = $user;
         $this->task = $task;
         $this->actionURL = $actionURL;
         $this->time = $time;
         $this->day = $day;
+        $this->filepath = $filepath;
     }
 
     /**
@@ -35,9 +38,25 @@ class NewTaskRequest extends Mailable
      */
     public function build()
     {
-        return $this
-        ->subject('[Nieuw verzoek] '.$this->task->title)
-        ->from($this->user->email, $this->user->name)
-        ->markdown('emails.newtask');
+
+        if($this->filepath !== null) {
+            $email = $this
+            ->subject('[Nieuw verzoek] '.$this->task->title.' (bijlage)')
+            ->from($this->user->email, $this->user->name)
+            ->markdown('emails.newtask');
+
+            foreach($this->filepath as $file) {
+                $email->attach('storage/app/'.$file);
+            }
+
+        } else {
+            $email = $this
+            ->subject('[Nieuw verzoek] '.$this->task->title)
+            ->from($this->user->email, $this->user->name)
+            ->markdown('emails.newtask');
+        }
+
+        return $email;
+
     }
 }

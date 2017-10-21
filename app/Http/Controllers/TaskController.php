@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use App\Classes\Weekdays;
 use App\Mail\NewTaskRequest;
 use Illuminate\Http\Request;
+use App\Jobs\DeleteAttachedFiles;
 
 class TaskController extends Controller
 {
@@ -119,8 +120,21 @@ public function filter(string $date = 'now')
 
             $day = ucfirst(Carbon::parse($request->date)->formatLocalized("%A %e %B"));
 
+            if($request->hasFile('file')) {
+
+                foreach($request->file as $file) {
+                    $filepath[] = $file->store('attachments');
+                }
+
+               // delete attached files after several minutes
+                //only trigger this job if there were any attachments
+                    DeleteAttachedFiles::dispatch($filepath)->delay(Carbon::now()->addMinutes(5));
+            } else {
+                $filepath = null;
+            }
+
         \Mail::to(env('APP_ADMIN_EMAIL'))
-        ->later(5, new NewTaskRequest($user, $task, $actionURL, $time, $day));
+        ->later(5, new NewTaskRequest($user, $task, $actionURL, $time, $day, $filepath));
 
         // redirect user with success flash
         session()->flash('message', 'Aanvraag succesvol ingediend');
