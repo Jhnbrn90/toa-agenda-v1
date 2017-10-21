@@ -126,15 +126,18 @@ public function filter(string $date = 'now')
                     $filepath[] = $file->store('attachments');
                 }
 
-               // delete attached files after several minutes
-                //only trigger this job if there were any attachments
-                    DeleteAttachedFiles::dispatch($filepath)->delay(Carbon::now()->addMinutes(5));
             } else {
                 $filepath = null;
             }
 
         \Mail::to(env('APP_ADMIN_EMAIL'))
         ->later(5, new NewTaskRequest($user, $task, $actionURL, $time, $day, $filepath));
+
+        if($request->hasFile('file')) {
+            // delete attached files after several minutes
+             //only trigger this job if there were any attachments
+                 DeleteAttachedFiles::dispatch($filepath)->delay(Carbon::now()->addMinutes(5));
+        }
 
         // redirect user with success flash
         session()->flash('message', 'Aanvraag succesvol ingediend');
