@@ -11,6 +11,8 @@
 ### Agenda view
 * User can create a task that spans multiple days
 * Sent e-mail to the admin when a new task is ~~created~~ / edited
+* Task request: with markdown WYSIWYG editor
+* Include breaks as a greyed out line/block/whatever
 
 ### Admin panel
 * Admin can edit / delete users
