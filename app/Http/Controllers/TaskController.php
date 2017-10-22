@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Classes\EmailDateFormatter;
 use App\Task;
 use App\Absence;
 use App\Timetable;
@@ -15,18 +16,20 @@ use Illuminate\Support\Facades\Mail;
 
 class TaskController extends Controller
 {
+    private $today;
+
     public function __construct()
     {
         $this->middleware('auth');
+        $this->today = Carbon::parse('now')->toDateString();
     }
 
 
     public function index(string $date = 'now')
     {
-       // today
-        $today = Carbon::parse('now')->toDateString();
-
         // determine which dates to show.
+            $today = $this->today;
+
             $week = new Weekdays($date);
             $weekdays = $week->getDaysofWeek();
             $date_back = $week->getPreviousWeek();
@@ -42,7 +45,7 @@ class TaskController extends Controller
         return view('tasks.index', compact('timeslots', 'weekdays', 'date_back', 'date_forward', 'today', 'absences'));
     }
 
-    public function searchDate(Request $request)
+    public function searchDate()
     {
         $date = request('date-DayMonth').'-'.request('date-Year');
 
@@ -73,13 +76,14 @@ public function filter(string $date = 'now')
         $tasks = Task::all();
 
         // Separate tasks into resp. days and timeslots.
-    return view('tasks.filter', compact('timeslots', 'weekdays', 'date_back', 'date_forward', 'today', 'tasks'));
+        return view('tasks.filter', compact('timeslots', 'weekdays', 'date_back', 'date_forward', 'today', 'tasks'));
+
     }
 
     public function create($date, $timeslot)
     {
 
-        $today = Carbon::parse('now')->toDateString();
+        $today = $this->today;
 
         if(Carbon::parse($date) < Carbon::parse($today)) {
             return redirect('/');
@@ -99,7 +103,7 @@ public function filter(string $date = 'now')
 
     public function store(Request $request)
     {
-        $this->validate(request(), [
+        $request->validate([
             'title' => 'required|max:25',
             'body' => 'required',
             'type' => 'required',
@@ -109,43 +113,29 @@ public function filter(string $date = 'now')
         ]);
 
         $user = auth()->user();
-
         $task = $user->submit(
             new Task(request(['date', 'timetable_id', 'title', 'body', 'type', 'class', 'subject', 'location']))
         );
 
         $actionURL = env('APP_URL').'/admin/task/'.$task->id;
 
-        // format these variables to readable strings
-            // "1e uur (08:30 - 09:30)"
-            $timetable = Timetable::where('id', $request->timetable_id)->first();
-            $time = $timetable->school_hour."e uur (".$timetable->starttime." - ".$timetable->endtime.")";
-            $day = ucfirst(Carbon::parse($request->date)->formatLocalized("%A %e %B"));
+        // format the date and time
+            $day = EmailDateFormatter::getWeekdayMonth($request->date);
+            $time = EmailDateFormatter::getSchoolTime($request->timetable_id);
 
-            // check for attachment and set filepath
-                $files = new AttachmentHandler($request);
-                $filepath = $files->uploadAttachment();
-            // send the e-mail with delay
-                Mail::to(env('APP_ADMIN_EMAIL'))
+        // upload files and send email
+            $filepath = (new AttachmentHandler($request))->uploadAttachment();
+            Mail::to(env('APP_ADMIN_EMAIL'))
                     ->later(5, new NewTaskRequest($user, $task, $actionURL, $time, $day, $filepath));
-            // mark the attachments for deletion from server
-                $files->deleteAttachments();
 
         // redirect user with success flash
         session()->flash('message', 'Aanvraag succesvol ingediend');
 
-        // get the monday of the given date and load the correct week
-        $date = Carbon::parse(request('date'))->format('d-m-Y');
+        // generate redirect URL based on booked timeslot
+        $redirectURL = EmailDateFormatter::getRedirectURL($request->timetable_id, $request->date);
 
-        if(request('timetable_id') == 1) {
-            $time = 1;
-        } else {
-            $time = request('timetable_id')-1;
-        }
+        return redirect($redirectURL);
 
-        $startdate = Carbon::parse(request('date'))->startOfWeek()->format('d-m-Y');
-
-        return redirect('/datum/'.$startdate.'#'.$date.'H'.$time);
     }
 
     public function edit(Task $task)
@@ -175,7 +165,7 @@ public function filter(string $date = 'now')
 
         $user = auth()->user();
 
-        $this->validate(request(), [
+        $request->validate([
             'title' => 'required|max:25',
             'body' => 'required',
             'type' => 'required',
@@ -196,23 +186,16 @@ public function filter(string $date = 'now')
         $date = Carbon::parse(request('date'))->startOfWeek()->format('d-m-Y');
 
         // send an e-mail to the site-admin
-            $actionURL = env('APP_URL').'/admin/task/'.$task->id;
+        $actionURL = env('APP_URL').'/admin/task/'.$task->id;
 
-        // format these variables to readable strings
-            $timetable = Timetable::where('id', $request->timetable_id)->first(); // "1e uur (08:30 - 09:30)"
-            $time = $timetable->school_hour."e uur (".$timetable->starttime." - ".$timetable->endtime.")";
-            $day = ucfirst(Carbon::parse($request->date)->formatLocalized("%A %e %B"));
+        // format the date and time
+        $day = EmailDateFormatter::getWeekdayMonth($request->date);
+        $time = EmailDateFormatter::getSchoolTime($request->timetable_id);
 
-            // check for attachment and set filepath
-                $files = new AttachmentHandler($request);
-                $filepath = $files->uploadAttachment();
-
-            // send the -email with delay
-             Mail::to(env('APP_ADMIN_EMAIL'))
-                ->later(5, new EditedTask($user, $task, $actionURL, $time, $day, $filepath));
-
-            // mark the attachments for deletion from server
-                $files->deleteAttachments();
+        // upload files and send email
+        $filepath = (new AttachmentHandler($request))->uploadAttachment();
+        Mail::to(env('APP_ADMIN_EMAIL'))
+            ->later(5, new EditedTask($user, $task, $actionURL, $time, $day, $filepath));
 
     // redirect user with success flash
         session()->flash('message', 'Wijzigingen zijn opgeslagen.');
@@ -220,6 +203,7 @@ public function filter(string $date = 'now')
         return redirect('/datum/'.$date);
 
     }
+
 
     public function destroy(Task $task)
     {

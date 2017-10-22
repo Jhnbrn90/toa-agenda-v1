@@ -15,6 +15,7 @@ class AttachmentHandler {
     }
 
     public function uploadAttachment() {
+        // upload the files if there are any
         if($this->request->hasFile('file')) {
             foreach($this->request->file as $file) {
                 $this->filepath[] = $file->store('attachments');
@@ -22,6 +23,11 @@ class AttachmentHandler {
         } else {
             $this->filepath = null;
         }
+
+        // set a timer to delete the files from the server
+        $this->deleteAttachments();
+
+        // return the filepath array
         return $this->filepath;
     }
 
