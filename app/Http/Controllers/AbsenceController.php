@@ -12,7 +12,6 @@ class AbsenceController extends Controller
 
     public function __construct() {
         $this->middleware('auth');
-
     }
 
     public function create($date, $timeslot)
@@ -36,12 +35,12 @@ class AbsenceController extends Controller
         $absence = Absence::where('date', $date)->first();
 
         if($absence !== null && $absence->count() > 0) {
+            // absences are stored in the DB as ([date, school_hour] = ["11-01-2017", "1, 2, 3"])
             $absence->school_hour = $absence->school_hour.", ".$request->school_hour;
             $absence->save();
         } else {
             Absence::create($validated);
         }
-
 
         if(request('school_hour') == 1) {
             $time = 1;

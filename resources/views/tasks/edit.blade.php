@@ -1,5 +1,9 @@
 @extends ('layouts.master')
 
+@section('styles')
+  <link rel="stylesheet" href="{{ URL::asset('css/simplemde.css') }}">
+@endsection
+
 @section ('content')
 <br>
 <div class="container" style="font-family: sans-serif;">
@@ -15,7 +19,7 @@
 
             @include ('layouts.errors')
 
-             <form method="POST" action="/aanvraag/{{ $task->id }}" autocomplete="off">
+             <form method="POST" action="/aanvraag/{{ $task->id }}" autocomplete="off" enctype="multipart/form-data">
                {{ csrf_field() }}
                {{ method_field('PATCH') }}
                <input type="hidden" name="date" id="date" value="{{ $task->date }}">
@@ -43,7 +47,14 @@
                <div class="form-row">
                  <div class="form-group col-md-12">
                    <label for="description" class="col-form-label"><strong>Omschrijving</strong></label>
-                   <textarea name="body" id="body" class="form-control" rows="3" placeholder="Beschijving van het practicum: proefopstelling, lesmateriaal, etc.&#10;Bij assistentie: geef ook aan om welk lesdeel het gaat (hele les, eerste deel, tweede deel)" required>{{ $task->body }}</textarea>
+                   <textarea name="body" id="body" class="form-control" rows="3" placeholder="Beschijving van het practicum: proefopstelling, lesmateriaal, etc.&#10;Bij assistentie: geef ook aan om welk lesdeel het gaat (hele les, eerste deel, tweede deel)">{{ $task->body }}</textarea>
+                 </div>
+               </div>
+
+               <div class="form-row">
+                 <div class="form-group col-md-12">
+                   <label for="upload" class="col-form-label"><strong>Bestand bijvoegen</strong> (optioneel)</label><br>
+                   <input type="file" name="file[]" class="form-control-file" multiple>
                  </div>
                </div>
 
@@ -92,6 +103,11 @@
 
 @section('scripts')
 <script>
+  var simplemde = new SimpleMDE({
+    spellChecker: false,
+    hideIcons: ["image", "heading", "link"],
+  });
+
   jQuery(document).ready(function($) {
       updateCountdown();
       $('#title').change(updateCountdown);

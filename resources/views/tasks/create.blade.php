@@ -1,7 +1,6 @@
 @extends ('layouts.master')
 
 @section('styles')
-<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"> -->
 <link rel="stylesheet" href="{{ URL::asset('css/simplemde.css') }}">
 @endsection
 

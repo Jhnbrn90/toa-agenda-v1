@@ -6,10 +6,12 @@ use App\Task;
 use App\Absence;
 use App\Timetable;
 use Carbon\Carbon;
+use App\Mail\EditedTask;
 use App\Classes\Weekdays;
 use App\Mail\NewTaskRequest;
 use Illuminate\Http\Request;
-use App\Jobs\DeleteAttachedFiles;
+use App\Classes\AttachmentHandler;
+use Illuminate\Support\Facades\Mail;
 
 class TaskController extends Controller
 {
@@ -115,29 +117,19 @@ public function filter(string $date = 'now')
         $actionURL = env('APP_URL').'/admin/task/'.$task->id;
 
         // format these variables to readable strings
-            $timetable = Timetable::where('id', $request->timetable_id)->first(); // "1e uur (08:30 - 09:30)"
+            // "1e uur (08:30 - 09:30)"
+            $timetable = Timetable::where('id', $request->timetable_id)->first();
             $time = $timetable->school_hour."e uur (".$timetable->starttime." - ".$timetable->endtime.")";
-
             $day = ucfirst(Carbon::parse($request->date)->formatLocalized("%A %e %B"));
 
-            if($request->hasFile('file')) {
-
-                foreach($request->file as $file) {
-                    $filepath[] = $file->store('attachments');
-                }
-
-            } else {
-                $filepath = null;
-            }
-
-        \Mail::to(env('APP_ADMIN_EMAIL'))
-        ->later(5, new NewTaskRequest($user, $task, $actionURL, $time, $day, $filepath));
-
-        if($request->hasFile('file')) {
-            // delete attached files after several minutes
-             //only trigger this job if there were any attachments
-                 DeleteAttachedFiles::dispatch($filepath)->delay(Carbon::now()->addMinutes(5));
-        }
+            // check for attachment and set filepath
+                $files = new AttachmentHandler($request);
+                $filepath = $files->uploadAttachment();
+            // send the e-mail with delay
+                Mail::to(env('APP_ADMIN_EMAIL'))
+                    ->later(5, new NewTaskRequest($user, $task, $actionURL, $time, $day, $filepath));
+            // mark the attachments for deletion from server
+                $files->deleteAttachments();
 
         // redirect user with success flash
         session()->flash('message', 'Aanvraag succesvol ingediend');
@@ -181,6 +173,8 @@ public function filter(string $date = 'now')
             return redirect('/');
         }
 
+        $user = auth()->user();
+
         $this->validate(request(), [
             'title' => 'required|max:25',
             'body' => 'required',
@@ -201,7 +195,26 @@ public function filter(string $date = 'now')
 
         $date = Carbon::parse(request('date'))->startOfWeek()->format('d-m-Y');
 
-        // redirect user with success flash
+        // send an e-mail to the site-admin
+            $actionURL = env('APP_URL').'/admin/task/'.$task->id;
+
+        // format these variables to readable strings
+            $timetable = Timetable::where('id', $request->timetable_id)->first(); // "1e uur (08:30 - 09:30)"
+            $time = $timetable->school_hour."e uur (".$timetable->starttime." - ".$timetable->endtime.")";
+            $day = ucfirst(Carbon::parse($request->date)->formatLocalized("%A %e %B"));
+
+            // check for attachment and set filepath
+                $files = new AttachmentHandler($request);
+                $filepath = $files->uploadAttachment();
+
+            // send the -email with delay
+             Mail::to(env('APP_ADMIN_EMAIL'))
+                ->later(5, new EditedTask($user, $task, $actionURL, $time, $day, $filepath));
+
+            // mark the attachments for deletion from server
+                $files->deleteAttachments();
+
+    // redirect user with success flash
         session()->flash('message', 'Wijzigingen zijn opgeslagen.');
 
         return redirect('/datum/'.$date);
