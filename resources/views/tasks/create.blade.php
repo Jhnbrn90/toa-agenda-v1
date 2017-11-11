@@ -8,7 +8,7 @@
 <br>
 
 <div class="container" style="font-family: sans-serif;">
-  <center><a href="/" class="text-primary">Terug naar agenda</a></center>
+  <center><a class="btn btn-info" href="javascript:history.back()" class="text-primary">Terug naar agenda</a></center>
   <br>
   <center>
   <div class="card" style="width: 80%; text-align:left;">
@@ -25,21 +25,42 @@
         <input type="hidden" name="timetable_id" id="timetable_id" value="{{ $timeslot }}">
         <div class="row">
           <div class="col-md-6">
-            <strong>Datum</strong> <br> {{ $date }}
+            <strong>Datum</strong> <br> {{ ucfirst($formatted_date) }}
           </div>
           <div class="col-md-6">
-            <strong>Lesuur</strong> <br> {{ $timeslot }}e uur ({{ $timetable->find($timeslot)->starttime.' - '.$timetable->find($timeslot)->endtime }})
+            <strong>Lesuur</strong> <br> {{ $timeslot }}e uur
           </div>
-
         </div>
-        <div class="form-row">
 
-          <div class="form-group col-md-5">
-            <label for="title" class="col-form-label"><strong>Titel</strong></label>
-            <input type="text" class="form-control" id="title" name="title" placeholder="Titel" aria-describedby="titleHelpBlock" maxlength="25" value="{{ old('title') }}" autofocus required>
-            <small id="titleHelpBlock" class="form-text text-muted">
-              Maximaal 25 tekens (<span class="countdown"></span>/25)
-            </small>
+        <br>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+                <label for="title"><strong>Titel</strong></label>
+                <input type="text" class="form-control" id="title" name="title" placeholder="Titel" aria-describedby="titleHelpBlock" maxlength="25" value="{{ old('title') }}" autofocus required>
+                <small id="titleHelpBlock" class="form-text text-muted">
+                  Maximaal 25 tekens (<span class="countdown"></span>/25)
+                </small>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="repeat"><strong>Meerdere afspraken</strong></label>
+              <div class="checkbox">
+                    <input type="checkbox" name="repeat" id="repeat" onclick="Repeat()">
+                    <div id="repeat-div" style="display: inline-block; display:none;">
+                     Deze afspraak nog
+                      &nbsp; <select name="repeatby" id="repeatby" class="form-control" style="width: 50px; display:inline-block;">
+                        <option value="">...</option>
+                        @for($i = 1; $i <= 10; $i++)
+                          <option value="{{ $i }}">{{ $i }}</option>
+                        @endfor
+                      </select> &nbsp;
+                     keer herhalen.
+                   </div>
+                </div>
+            </div>
           </div>
         </div>
 
@@ -108,5 +129,18 @@
       var remaining = 25 - jQuery('#title').val().length;
       jQuery('.countdown').text(remaining + '');
   }
+
+  function Repeat() {
+    $('#repeat-div').fadeToggle();
+    $('#repeat-div').css('display', 'inline-block');
+
+    if($('#repeat').is(':checked')) {
+      $('#repeatby').attr('required', 'true');
+    } else {
+      $('#repeatby').removeAttr('required', 'false');
+    }
+
+  }
+
 </script>
 @endsection

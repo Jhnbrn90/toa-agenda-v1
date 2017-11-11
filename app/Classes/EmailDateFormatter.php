@@ -14,7 +14,7 @@ class EmailDateFormatter {
     public static function getSchoolTime($timetable_id)
     {
         $timetable = Timetable::where('id', $timetable_id)->first();
-        return $timetable->school_hour."e uur (".$timetable->starttime." - ".$timetable->endtime.")";
+        return $timetable->school_hour."e uur";
     }
 
     public static function getRedirectURL($timetable_id, $date)

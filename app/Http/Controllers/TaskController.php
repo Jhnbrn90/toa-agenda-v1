@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Classes\EmailDateFormatter;
 use App\Task;
 use App\Absence;
 use App\Timetable;
 use Carbon\Carbon;
 use App\Mail\EditedTask;
 use App\Classes\Weekdays;
+use App\Mail\DeletedTask;
 use App\Mail\NewTaskRequest;
 use Illuminate\Http\Request;
+use App\Mail\NewMultiTaskRequest;
 use App\Classes\AttachmentHandler;
+use App\Classes\EmailDateFormatter;
 use Illuminate\Support\Facades\Mail;
 
 class TaskController extends Controller
@@ -98,7 +100,9 @@ public function filter(string $date = 'now')
         $timetable = Timetable::all();
         $notAvailable = Task::where('date', $date)->where('timetable_id', $timeslot)->pluck('type')->search('assistentie');
 
-        return view('tasks.create', compact('date', 'timeslot', 'timetable', 'notAvailable'));
+        $formatted_date = Carbon::parse($date)->formatLocalized('%A %d-%m-%Y');
+
+        return view('tasks.create', compact('date', 'formatted_date', 'timeslot', 'timetable', 'notAvailable'));
     }
 
     public function store(Request $request)
@@ -111,6 +115,44 @@ public function filter(string $date = 'now')
             'subject' => 'required',
             'location' => 'required'
         ]);
+
+        if($request->repeat !== null) {
+
+            $dates = array();
+            $setId = str_random();
+            $timesToRepeat = $request->repeatby;
+
+            $day = EmailDateFormatter::getWeekdayMonth($request->date);
+            $time = EmailDateFormatter::getSchoolTime($request->timetable_id);
+
+            for($i = 0; $i <= $timesToRepeat; $i++) {
+                $task = new Task();
+                $task->date = Carbon::parse($request->date)->addWeeks($i)->format('d-m-Y');
+                $task->timetable_id = $request->timetable_id;
+                $task->title = $request->title . ' ('.($i+1).'/'.($timesToRepeat+1).')';
+                $task->body = $request->body;
+                $task->type = $request->type;
+                $task->class = $request->class;
+                $task->subject = $request->subject;
+                $task->location = $request->location;
+                $task->user_id = auth()->id();
+                $task->set_id = $setId;
+                $task->save();
+            }
+
+            $filepath = (new AttachmentHandler($request))->uploadAttachment();
+
+            $task = array();
+            $task = $request->all();
+
+            Mail::to(env('APP_ADMIN_EMAIL'))
+                ->later(3, new NewMultiTaskRequest(auth()->user(), $task, $time, $day, $filepath));
+
+            session()->flash('message', 'Aanvraag is succesvol ingediend.');
+
+            return redirect('/');
+
+        }
 
         $user = auth()->user();
         $task = $user->submit(
@@ -211,7 +253,29 @@ public function filter(string $date = 'now')
             return redirect('/');
         }
 
+        $user = auth()->user();
+        $date = EmailDateFormatter::getWeekdayMonth($task->date);
+        $time = EmailDateFormatter::getSchoolTime($task->timetable_id);
+
+        // define all variables here
+        $task_vars = array();
+        $task_vars['name'] = $task->name;
+        $task_vars['title'] = $task->title;
+        $task_vars['subject'] = $task->subject;
+        $task_vars['type'] = $task->type;
+        $task_vars['class'] = $task->class;
+        $task_vars['location'] = $task->location;
+
+        $user_vars = array();
+        $user_vars['name'] = $user->name;
+        $user_vars['email'] = $user->email;
+
+        //let the admin know this task was deleted
+        Mail::to(env('APP_ADMIN_EMAIL'))
+            ->later(5, new DeletedTask($task_vars, $user_vars, $date, $time));
+
         $date = Carbon::parse($task->date)->startOfWeek()->format('d-m-Y');
+
         $task->delete();
 
         // redirect user with success flash

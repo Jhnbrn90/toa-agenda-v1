@@ -5,9 +5,13 @@ use App\Task;
 use App\User;
 use App\Timetable;
 use Carbon\Carbon;
+use App\Mail\DeniedTask;
 use App\Classes\Weekdays;
+use App\Mail\AcceptedTask;
 use App\Classes\TaskSorter;
 use Illuminate\Http\Request;
+use App\Classes\EmailDateFormatter;
+use Illuminate\Support\Facades\Mail;
 
 class AdminController extends Controller
 {
@@ -72,8 +76,14 @@ class AdminController extends Controller
                 $task->message = request('message');
                 $task->save();
                 session()->flash('message', 'Aanvraag geaccepteerd.');
-                // generate and send email to user
 
+                // generate and send email to user
+                $actionURL = env('APP_URL').'/aanvraag/' . $task->id . '/bewerken';
+                $time = EmailDateFormatter::getSchoolTime($task->timetable_id);
+                $day = EmailDateFormatter::getWeekdayMonth($task->date);
+
+                Mail::to($task->user->email)
+                        ->later(3, new AcceptedTask($task, $actionURL, $time, $day));
             break;
 
             case 'deny':
@@ -83,7 +93,14 @@ class AdminController extends Controller
                 $task->save();
 
                 session()->flash('message', 'Aanvraag geweigerd.');
+
                 // generate and send email to user
+                $time = EmailDateFormatter::getSchoolTime($task->timetable_id);
+                $day = EmailDateFormatter::getWeekdayMonth($task->date);
+
+                Mail::to($task->user->email)
+                        ->later(3, new DeniedTask($task, $time, $day));
+
             break;
 
             default:
