@@ -8,7 +8,6 @@ use App\Jobs\DeleteAttachedFiles;
 
 class AttachmentHandler {
 
-
     public function __construct(Request $request)
     {
         $this->request = $request;
@@ -33,9 +32,8 @@ class AttachmentHandler {
 
     public function deleteAttachments()
     {
-
         if($this->request->hasFile('file')) {
-            DeleteAttachedFiles::dispatch($this->filepath)->delay(Carbon::now()->addMinutes(5));
+            DeleteAttachedFiles::dispatch($this->filepath)->delay(Carbon::now()->addMinutes(2));
         }
 
     }

@@ -4,6 +4,7 @@
 
 ### General
 * ~~E-mail functionality (via queued jobs)~~
+* Make worker on queue stable @ server (using supervisor?)
 * ~~Give the TOA (admin) the option to mark days as absent~~
 * ~~Add ability to attach course file with task request and attach in e-mail~~
 * Refactor the controllers

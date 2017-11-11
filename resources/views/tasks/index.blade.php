@@ -50,9 +50,9 @@
                     <a name="{{ $weekday->format('d-m-Y') }}H{{ $timeslots[$i]->school_hour }}"></a>
                     <div class="card-body">
                         <h4 class="card-title"><strong>{{ $timeslots[$i]->school_hour }}<sup>e</sup> uur</strong></h4>
-                        <h6 class="card-subtitle mb-2 text-muted">
+                        <!-- <h6 class="card-subtitle mb-2 text-muted">
                             {{ $timeslots[$i]->starttime }} - {{ $timeslots[$i]->endtime }}
-                        </h6>
+                        </h6> -->
                         <div class="card-text">
                             <span class="text-danger">Afwezig</span>
                             <div class="highlight">
@@ -66,9 +66,9 @@
                     <a name="{{ $weekday->format('d-m-Y') }}H{{ $timeslots[$i]->school_hour }}"></a>
                     <div class="card-body">
                         <h4 class="card-title"><strong>{{ $timeslots[$i]->school_hour }}<sup>e</sup> uur</strong></h4>
-                        <h6 class="card-subtitle mb-2 text-muted">
+                        <!-- <h6 class="card-subtitle mb-2 text-muted">
                             {{ $timeslots[$i]->starttime }} - {{ $timeslots[$i]->endtime }}
-                        </h6>
+                        </h6> -->
                         <div class="card-text">
                                 @if(($results = $timeslots[$i]->tasks->where('date', $weekday->format('d-m-Y'))->where('accepted', '>=', 1)) AND $results->count() !== 0)
                                     @foreach($results as $result)

@@ -126,7 +126,7 @@ public function filter(string $date = 'now')
         // upload files and send email
             $filepath = (new AttachmentHandler($request))->uploadAttachment();
             Mail::to(env('APP_ADMIN_EMAIL'))
-                    ->later(5, new NewTaskRequest($user, $task, $actionURL, $time, $day, $filepath));
+                    ->later(3, new NewTaskRequest($user, $task, $actionURL, $time, $day, $filepath));
 
         // redirect user with success flash
         session()->flash('message', 'Aanvraag succesvol ingediend');
