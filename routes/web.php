@@ -67,6 +67,11 @@ Route::prefix('admin')->group(function () {
     Route::get('tasks/all', 'AdminController@showAllTasks')->name('admin_tasks_all');
     Route::patch('task/{task}', 'AdminController@updateTask');
 
+    // taskset routes
+    Route::get('taskset/{taskset}', 'AdminController@showTaskset');
+    Route::post('taskset', 'AdminController@storeTaskset');
+    Route::delete('taskset', 'AdminController@deleteTaskset');
+
     // user routes
     Route::get('users/create', 'AdminController@createUser')->name('admin_create_user');
     Route::get('users/manage', 'AdminController@showUsers')->name('admin_show_users');

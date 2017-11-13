@@ -43,5 +43,7 @@ class DeletedTask extends Mailable
         ->subject('[Verwijderd] ' . $this->task['title'])
         ->from($this->user['email'], $this->user['name'])
         ->markdown('emails.deleted-task');
+
+        return $email;
     }
 }

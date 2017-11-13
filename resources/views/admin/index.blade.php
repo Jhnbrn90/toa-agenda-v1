@@ -17,7 +17,20 @@
                       <div class="col-md-5">
                         <div class="container">
                           <h4>Openstaande verzoeken</h4>
+                          Sets:<br>
+                          <ul>
+                            @foreach($waitingSets as $taskset)
+                              <li>
+                                <a href="/admin/taskset/{{ $taskset['set_id'] }}">
+                                  {{ substr($taskset['title'], 0, -6) }} ({{ \App\Task::where('set_id', $taskset['set_id'])->count() }})
+                                </a> <br>
+                                <small class="text-muted">
+                                 {{ $taskset['user']->name }} | {{ $taskset['created_at']->diffForHumans() }}</small>
+                              </li>
+                            @endforeach
+                          </ul>
 
+                          Singletons: <br>
                           <ul>
                             @foreach($waitingTasks as $task)
                                 <li>

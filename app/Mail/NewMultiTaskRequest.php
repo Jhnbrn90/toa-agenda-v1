@@ -2,6 +2,8 @@
 
 namespace App\Mail;
 
+use App\Task;
+use App\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -43,7 +45,7 @@ class NewMultiTaskRequest extends Mailable
                 $email = $this
                 ->subject('[Nieuw herhaalverzoek] '.$this->task['title'].' (bijlage)')
                 ->from($this->user->email, $this->user->name)
-                ->markdown('emails.newtask');
+                ->markdown('emails.multitaskrequest');
 
                 foreach($this->filepath as $file) {
                     $email->attach('storage/app/'.$file);

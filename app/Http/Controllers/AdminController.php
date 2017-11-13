@@ -10,6 +10,7 @@ use App\Classes\Weekdays;
 use App\Mail\AcceptedTask;
 use App\Classes\TaskSorter;
 use Illuminate\Http\Request;
+use App\Mail\AcceptedMultiTask;
 use App\Classes\EmailDateFormatter;
 use Illuminate\Support\Facades\Mail;
 
@@ -29,7 +30,20 @@ class AdminController extends Controller
         $tasks = Task::all();
 
         // fetch all unapproved tasks.
-        $waitingTasks = Task::where('accepted', '=', 2)->orderBy('id', 'desc')->get();
+        $waitingTasks = Task::whereNull('set_id')->where('accepted', '=', 2)->orderBy('id', 'desc')->get();
+
+        $waitingSetIds = Task::where('accepted', '=', 2)
+                        ->whereNotNull('set_id')
+                        ->groupBy('set_id')
+                        ->select('set_id')
+                        ->pluck('set_id');
+
+        $waitingSets = array();
+
+        foreach($waitingSetIds as $setId) {
+            $waitingSets[] = Task::where('set_id', $setId)->first();
+        }
+
 
         // fetch info for the bar graphs
         $TasksByHour = (new TaskSorter())->tasksByHour();
@@ -44,7 +58,7 @@ class AdminController extends Controller
 
         $isWeekend = Carbon::parse('now')->isWeekend();
 
-        return view('admin.index', compact('tasks', 'waitingTasks', 'daytasks', 'weektasks', 'isWeekend'));
+        return view('admin.index', compact('tasks', 'waitingTasks', 'waitingSets', 'daytasks', 'weektasks', 'isWeekend'));
     }
 
     public function show(Task $task)
@@ -137,6 +151,92 @@ class AdminController extends Controller
 
         $users = User::all();
         return view('admin.showusers', compact('users'));
+    }
+
+    public function showTaskset($taskset)
+    {
+        $taskSet = Task::where('set_id', $taskset)->where('accepted', '=', 2);
+        if($taskSet->count() == 0) {
+            return back();
+        }
+        $taskSet_title = substr($taskSet->pluck('title')->first(), 0, -6);
+        $taskSet_day = Carbon::parse($taskSet->first()->date)->formatLocalized('%A');
+        $taskSet_time = $taskSet->first()->timetable->school_hour;
+
+        $taskSet_email = $taskSet->first()->user->email;
+
+        $taskSet = Task::where('set_id', $taskset)->orderBy('id', 'ASC')->get();
+        $taskSet_id = $taskset;
+
+        return view('admin.showtaskset', compact('taskSet', 'taskSet_id', 'taskSet_title', 'taskSet_email', 'taskSet_day', 'taskSet_time'));
+    }
+
+    public function storeTaskset(Request $request)
+    {
+
+        if($request->tasks == null) {
+            return back();
+        }
+
+        // get the set_id token
+        $taskSet_id = $request->taskset_id;
+
+        $acceptedTasks = array();
+        $deniedTasks = array();
+
+        foreach($request->tasks as $task_id) {
+            $task = Task::where('id', $task_id)->first();
+            $task->accepted = 1;
+            $task->message = $request->message;
+            $task->save();
+            $acceptedTasks[] = $task;
+        }
+
+        $deniedTasks = Task::where('set_id', $taskSet_id)->where('accepted', '=', 2)->get();
+
+        foreach($deniedTasks as $task) {
+            $task->accepted = 0;
+            $task->message = $request->message;
+            $task->save();
+            $deniedTasks[] = $task;
+        }
+
+
+        // generate and send email to user
+        $taskHour = $request->taskset_time;
+        $taskTitle = $request->taskset_title;
+        $acceptedDates = array();
+        $deniedDates = array();
+
+        foreach($acceptedTasks as $acceptedTask) {
+            $acceptedDates[] = EmailDateFormatter::getWeekdayMonth($acceptedTask->date);
+        }
+        foreach($deniedTasks as $deniedTask) {
+            $deniedDates[] = EmailDateFormatter::getWeekdayMonth($deniedTask->date);
+        }
+
+        $acceptedDates = implode(", ", $acceptedDates);
+        $deniedDates = implode(", ", $deniedDates);
+
+        Mail::to($request->taskset_email)
+            ->later(3, new AcceptedMultiTask($taskTitle, $taskHour, $acceptedDates, $deniedDates, $request->message));
+
+        session()->flash('message', 'Geselecteerde taken geaccepteerd.');
+
+        return redirect('/admin');
+
+    }
+
+    public function deleteTaskset(Request $request)
+    {
+        $tasks = Task::where('set_id', $request->taskset_id)->get();
+
+        foreach($tasks as $task) {
+            $task->accepted = 0;
+        }
+
+        session()->flash('message', 'Alle verzoeken geweigerd.');
+        return redirect('/admin');
     }
 
 }

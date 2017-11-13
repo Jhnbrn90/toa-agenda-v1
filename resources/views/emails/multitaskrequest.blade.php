@@ -1,3 +1,10 @@
 @component('mail::message')
-# Nieuwe herhaal aanvraag
+# Nieuwe aanvraag
+** {{ $task['title' ] }} **
+<br>
+{{ $task['body'] }}
+
+##Meerdere data
+...overzichtje van data
+
 @endcomponent

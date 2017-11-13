@@ -116,67 +116,60 @@ public function filter(string $date = 'now')
             'location' => 'required'
         ]);
 
-        if($request->repeat !== null) {
+        $user = auth()->user();
 
-            $dates = array();
+        $filepath = (new AttachmentHandler($request))->uploadAttachment();
+
+        $day = EmailDateFormatter::getWeekdayMonth($request->date);
+        $time = EmailDateFormatter::getSchoolTime($request->timetable_id);
+
+        if($request->repeat !== null) {
             $setId = str_random();
             $timesToRepeat = $request->repeatby;
 
-            $day = EmailDateFormatter::getWeekdayMonth($request->date);
-            $time = EmailDateFormatter::getSchoolTime($request->timetable_id);
-
             for($i = 0; $i <= $timesToRepeat; $i++) {
-                $task = new Task();
-                $task->date = Carbon::parse($request->date)->addWeeks($i)->format('d-m-Y');
-                $task->timetable_id = $request->timetable_id;
-                $task->title = $request->title . ' ('.($i+1).'/'.($timesToRepeat+1).')';
-                $task->body = $request->body;
-                $task->type = $request->type;
-                $task->class = $request->class;
-                $task->subject = $request->subject;
-                $task->location = $request->location;
-                $task->user_id = auth()->id();
-                $task->set_id = $setId;
-                $task->save();
+                $multiTask = new Task();
+                $multiTask->date = Carbon::parse($request->date)->addWeeks($i)->format('d-m-Y');
+                $multiTask->timetable_id = $request->timetable_id;
+                $multiTask->title = $request->title . ' ('.($i+1).'/'.($timesToRepeat+1).')';
+                $multiTask->body = $request->body;
+                $multiTask->type = $request->type;
+                $multiTask->class = $request->class;
+                $multiTask->subject = $request->subject;
+                $multiTask->location = $request->location;
+                $multiTask->user_id = auth()->id();
+                $multiTask->set_id = $setId;
+                $multiTask->save();
             }
 
-            $filepath = (new AttachmentHandler($request))->uploadAttachment();
-
             $task = array();
-            $task = $request->all();
+            $task['title'] = $request->title;
+            $task['body'] = $request->body;
 
             Mail::to(env('APP_ADMIN_EMAIL'))
-                ->later(3, new NewMultiTaskRequest(auth()->user(), $task, $time, $day, $filepath));
+                ->later(3, new NewMultiTaskRequest($user, $task, $time, $day, $filepath));
 
             session()->flash('message', 'Aanvraag is succesvol ingediend.');
 
             return redirect('/');
 
-        }
+        } else {
 
-        $user = auth()->user();
-        $task = $user->submit(
-            new Task(request(['date', 'timetable_id', 'title', 'body', 'type', 'class', 'subject', 'location']))
-        );
+            $task = $user->submit(
+                new Task(request(['date', 'timetable_id', 'title', 'body', 'type', 'class', 'subject', 'location']))
+            );
 
-        $actionURL = env('APP_URL').'/admin/task/'.$task->id;
+            $actionURL = env('APP_URL').'/admin/task/'.$task->id;
 
-        // format the date and time
-            $day = EmailDateFormatter::getWeekdayMonth($request->date);
-            $time = EmailDateFormatter::getSchoolTime($request->timetable_id);
-
-        // upload files and send email
-            $filepath = (new AttachmentHandler($request))->uploadAttachment();
             Mail::to(env('APP_ADMIN_EMAIL'))
-                    ->later(3, new NewTaskRequest($user, $task, $actionURL, $time, $day, $filepath));
+                ->later(3, new NewTaskRequest($user, $task, $actionURL, $time, $day, $filepath));
 
-        // redirect user with success flash
-        session()->flash('message', 'Aanvraag succesvol ingediend');
+            session()->flash('message', 'Aanvraag succesvol ingediend');
 
-        // generate redirect URL based on booked timeslot
-        $redirectURL = EmailDateFormatter::getRedirectURL($request->timetable_id, $request->date);
+            $redirectURL = EmailDateFormatter::getRedirectURL($request->timetable_id, $request->date);
 
-        return redirect($redirectURL);
+            return redirect($redirectURL);
+        }
 
     }
 

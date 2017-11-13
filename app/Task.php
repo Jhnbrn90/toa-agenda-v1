@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
@@ -21,5 +22,10 @@ class Task extends Model
     public function scopeActive($query)
     {
         return $query->where('accepted', '>=', 1);
+    }
+
+    public function Carbonize()
+    {
+        return Carbon::parse($this->date);
     }
 }
