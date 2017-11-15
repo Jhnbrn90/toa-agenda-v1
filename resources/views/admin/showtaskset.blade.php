@@ -50,7 +50,7 @@
                               </div>
                             @endforeach
                             <br><br>
-                            <textarea rows="3" class="form-control" placeholder="Voeg bericht toe.." name="message"></textarea> <br>
+                            <textarea rows="3" class="form-control" placeholder="Voeg bericht toe.." name="message" onChange="updateMessage(this)"></textarea> <br>
                            <button class="btn btn-lg btn-success">Geselecteerde accepteren</button>
                           </form>
                           <br><br>
@@ -58,6 +58,8 @@
                             {{ csrf_field() }}
                             {{ method_field('delete') }}
                             <input type="hidden" name="taskset_id" value="{{ $taskSet_id }}">
+                            <input type="hidden" name="taskset_email" value="{{ $taskSet_email }}">
+                            <input type="hidden" name="message" id="deniedMessage" value="">
                             <button class="btn btn-lg btn-danger">Alles weigeren</button>
                           </form>
                          </center>
@@ -81,5 +83,10 @@
 
     });
   });
+
+function updateMessage(message) {
+  document.getElementById('deniedMessage').value = message.value;
+}
+
 </script>
 @endsection

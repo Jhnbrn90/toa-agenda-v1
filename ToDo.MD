@@ -14,9 +14,8 @@
 * ~~Task request: with markdown WYSIWYG editor~~
 
 ### Admin panel
-* Admin can edit / delete users
+* ~~Admin can edit / delete users~~
 * Admin can generate week / month overview of tasks
 * Admin gets an e-mail on sunday containing an overview of the tasks this week
 * ~~Send e-mail when task is accepted/denied to user~~
-* ~~Send e-mail when a repeating tasks are accepted~~
-* Send e-mail when a repeating tasks are denied
+* ~~Send e-mail when a repeating tasks are accepted/denied~~

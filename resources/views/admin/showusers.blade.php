@@ -4,6 +4,8 @@
 
     @include ('admin.navbar')
 
+    @include('layouts.flash')
+
         <div class="container-fluid">
           <div class="row">
 
@@ -24,7 +26,7 @@
                     <tbody>
                         @foreach($users as $user)
                             <tr>
-                                <td>{{ $user->name }}</td>
+                                <td><a href="/admin/users/edit/{{ $user->id }}">{{ $user->name }}</a></td>
                                 <td>{{ $user->shortname }}</td>
                                 <td>{{ $user->email }}</td>
                                 <td>@if($user->is_admin == 1) TOA @else Docent @endif</td>

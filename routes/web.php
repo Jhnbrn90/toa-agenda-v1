@@ -75,5 +75,8 @@ Route::prefix('admin')->group(function () {
     // user routes
     Route::get('users/create', 'AdminController@createUser')->name('admin_create_user');
     Route::get('users/manage', 'AdminController@showUsers')->name('admin_show_users');
+    Route::get('users/edit/{user}', 'AdminController@editUser');
+    Route::patch('users', 'AdminController@updateUser');
+    Route::get('/user/{user}/delete', 'AdminController@destroyUser');
 });
 

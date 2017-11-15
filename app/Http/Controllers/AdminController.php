@@ -11,6 +11,7 @@ use App\Mail\AcceptedTask;
 use App\Classes\TaskSorter;
 use Illuminate\Http\Request;
 use App\Mail\AcceptedMultiTask;
+use App\Mail\RejectedMultiTask;
 use App\Classes\EmailDateFormatter;
 use Illuminate\Support\Facades\Mail;
 
@@ -153,6 +154,43 @@ class AdminController extends Controller
         return view('admin.showusers', compact('users'));
     }
 
+    public function editUser(User $user)
+    {
+        return view('admin.users.edit', compact('user'));
+    }
+
+    public function updateUser(Request $request)
+    {
+        $request->validate([
+            'name'          => 'required',
+            'email'         => 'required|email',
+            'shortname'     => 'required',
+            'userrole'      => 'required'
+        ]);
+
+        $user = User::find($request->userId);
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->shortname = $request->shortname;
+        $user->is_admin = $request->userrole;
+        $user->save();
+
+        session()->flash('message', 'Gebruiker bijgewerkt');
+
+        return redirect('/admin/users/manage');
+
+    }
+
+    public function destroyUser(User $user)
+    {
+        $user->delete();
+
+        session()->flash('message', 'Gebruiker verwijderd');
+
+        return redirect('/admin/users/manage');
+    }
+
     public function showTaskset($taskset)
     {
         $taskSet = Task::where('set_id', $taskset)->where('accepted', '=', 2);
@@ -230,13 +268,27 @@ class AdminController extends Controller
     public function deleteTaskset(Request $request)
     {
         $tasks = Task::where('set_id', $request->taskset_id)->get();
+        $taskTitle = substr($tasks->first()->title, 0, -6);
+        $taskHour = $tasks->first()->timetable->school_hour;
+
+        $dates = array();
 
         foreach($tasks as $task) {
             $task->accepted = 0;
+            $task->message = $request->message;
+            $task->save();
+            $dates[] = EmailDateFormatter::getWeekdayMonth($task->date);
         }
 
+        $dates = implode(", ", $dates);
+
+        Mail::to($request->taskset_email)
+            ->later(3, new RejectedMultiTask($taskTitle, $taskHour, $dates, $request->message));
+
         session()->flash('message', 'Alle verzoeken geweigerd.');
+
         return redirect('/admin');
+
     }
 
 }
