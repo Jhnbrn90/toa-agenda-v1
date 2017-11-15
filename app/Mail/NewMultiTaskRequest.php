@@ -24,14 +24,16 @@ class NewMultiTaskRequest extends Mailable
     public $time;
     public $day;
     public $filepath;
+    public $actionURL;
 
-    public function __construct($user, $task, $time, $day, $filepath)
+    public function __construct($user, $task, $time, $day, $filepath, $actionURL)
     {
         $this->user = $user;
         $this->task = $task;
         $this->time = $time;
         $this->day = $day;
         $this->filepath = $filepath;
+        $this->actionURL = $actionURL;
     }
 
     /**

@@ -1,10 +1,11 @@
 @component('mail::message')
-# Nieuwe aanvraag
+# Nieuwe herhalende aanvraag
 ** {{ $task['title' ] }} **
 <br>
 {{ $task['body'] }}
 
-##Meerdere data
-...overzichtje van data
+@component('mail::button', ['url' => $actionURL])
+Aanvraag bekijken
+@endcomponent
 
 @endcomponent
