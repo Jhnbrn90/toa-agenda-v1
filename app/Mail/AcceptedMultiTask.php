@@ -41,6 +41,7 @@ class AcceptedMultiTask extends Mailable
         $email = $this
         ->subject('[Geaccepteerd] ' . $this->title)
         ->from(env('APP_ADMIN_EMAIL'), env('APP_ADMIN_NAME'))
+        ->replyTo(env('APP_ADMIN_EMAIL'), env('APP_ADMIN_NAME'))
         ->markdown('emails.acceptedmultitask');
 
         return $email;

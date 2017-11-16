@@ -39,6 +39,7 @@ class DeniedTask extends Mailable
         $email = $this
         ->subject('[Geweigerd] '.$this->task->title)
         ->from(env('APP_ADMIN_EMAIL'), env('APP_ADMIN_NAME'))
+        ->replyTo(env('APP_ADMIN_EMAIL'), env('APP_ADMIN_NAME'))
         ->markdown('emails.task-denied');
 
         return $email;

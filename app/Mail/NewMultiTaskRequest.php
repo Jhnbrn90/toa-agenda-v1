@@ -47,6 +47,7 @@ class NewMultiTaskRequest extends Mailable
                 $email = $this
                 ->subject('[Nieuw herhaalverzoek] '.$this->task['title'].' (bijlage)')
                 ->from($this->user->email, $this->user->name)
+                ->replyTo($this->user->email, $this->user->name)
                 ->markdown('emails.multitaskrequest');
 
                 foreach($this->filepath as $file) {
@@ -57,6 +58,7 @@ class NewMultiTaskRequest extends Mailable
                 $email = $this
                 ->subject('[Nieuw herhaalverzoek] '.$this->task['title'])
                 ->from($this->user->email, $this->user->name)
+                ->replyTo($this->user->email, $this->user->name)
                 ->markdown('emails.multitaskrequest');
             }
 

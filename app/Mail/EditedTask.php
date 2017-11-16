@@ -47,6 +47,7 @@ class EditedTask extends Mailable
             $email = $this
             ->subject('[Bewerkt] '.$this->task->title.' (bijlage)')
             ->from($this->user->email, $this->user->name)
+            ->replyTo($this->user->email, $this->user->name)
             ->markdown('emails.editedtask');
 
             foreach($this->filepath as $file) {
@@ -57,6 +58,7 @@ class EditedTask extends Mailable
             $email = $this
             ->subject('[Bewerkt] '.$this->task->title)
             ->from($this->user->email, $this->user->name)
+            ->replyTo($this->user->email, $this->user->name)
             ->markdown('emails.editedtask');
         }
 

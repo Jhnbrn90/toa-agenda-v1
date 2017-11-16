@@ -42,6 +42,7 @@ class AcceptedTask extends Mailable
         $email = $this
         ->subject('[Geaccepteerd] '.$this->task->title)
         ->from(env('APP_ADMIN_EMAIL'), env('APP_ADMIN_NAME'))
+        ->replyTo(env('APP_ADMIN_EMAIL'), env('APP_ADMIN_NAME'))
         ->markdown('emails.task-accepted');
 
         return $email;
