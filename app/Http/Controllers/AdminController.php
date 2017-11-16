@@ -129,7 +129,7 @@ class AdminController extends Controller
 
     public function showAllTasks()
     {
-        $tasks = Task::orderBy('date', 'DESC')->get();
+        $tasks = Task::orderBy('created_at', 'DESC')->get();
 
         return view('admin.showAllTasks', compact('tasks'));
     }
