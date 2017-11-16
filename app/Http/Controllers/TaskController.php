@@ -98,7 +98,11 @@ public function filter(string $date = 'now')
         }
 
         $timetable = Timetable::all();
-        $notAvailable = Task::where('date', $date)->where('timetable_id', $timeslot)->pluck('type')->search('assistentie');
+        $notAvailable = Task::where('date', $date)
+                        ->where('timetable_id', $timeslot)
+                        ->where('accepted', 2)
+                        ->pluck('type')
+                        ->search('assistentie');
 
         $formatted_date = Carbon::parse($date)->formatLocalized('%A %d-%m-%Y');
 
@@ -139,6 +143,9 @@ public function filter(string $date = 'now')
                 $multiTask->location = $request->location;
                 $multiTask->user_id = auth()->id();
                 $multiTask->set_id = $setId;
+                if($user->is_admin == 1) {
+                    $multiTask->accepted = 1;
+                }
                 $multiTask->save();
             }
 
@@ -159,6 +166,11 @@ public function filter(string $date = 'now')
             $task = $user->submit(
                 new Task(request(['date', 'timetable_id', 'title', 'body', 'type', 'class', 'subject', 'location']))
             );
+
+            if($user->is_admin == 1) {
+                $task->accepted = 1;
+                $task->save();
+            }
 
             $actionURL = env('APP_URL').'/admin/task/'.$task->id;
 

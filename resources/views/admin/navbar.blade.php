@@ -8,9 +8,13 @@
     <ul class="navbar-nav mr-auto">
       <li class="nav-item
       {{Route::currentRouteName() == "admin_index" ? 'active' : ''}}
-      {{Route::currentRouteName() == "admin_tasks_all" ? 'active' : ''}}
       ">
-        <a class="nav-link" href="/admin">Overzicht <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="/admin">Nieuwe aanvragen <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item
+        {{Route::currentRouteName() == "admin_tasks_all" ? 'active' : ''}}
+        ">
+        <a class="nav-link" href="/admin/tasks/all">Alle taken</a>
       </li>
       <li class="nav-item
         {{Route::currentRouteName() == "admin_absence_index" ? 'active' : ''}}

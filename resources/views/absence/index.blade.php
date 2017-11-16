@@ -12,6 +12,9 @@
             <main class="col-sm-9 ml-sm-auto col-md-10 pt-3" role="main">
               @include ('layouts.flash')
               <h1>Absenties</h1>
+              <a class="btn btn-success" href="/admin/absence/create">Nieuwe absentie aanmaken</a>
+              <br><br>
+              <h2>Overzicht</h2>
               <div class="container" style="padding-top:10px;">
                 <table class="table table-striped table-hover">
                   <thead>
