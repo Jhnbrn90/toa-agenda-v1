@@ -50,9 +50,6 @@
                     <a name="{{ $weekday->format('d-m-Y') }}H{{ $timeslots[$i]->school_hour }}"></a>
                     <div class="card-body">
                         <h4 class="card-title"><strong>{{ $timeslots[$i]->school_hour }}<sup>e</sup> uur</strong></h4>
-                        <!-- <h6 class="card-subtitle mb-2 text-muted">
-                            {{ $timeslots[$i]->starttime }} - {{ $timeslots[$i]->endtime }}
-                        </h6> -->
                         <div class="card-text">
                             <span class="text-danger">Afwezig</span>
                             <div class="highlight">
@@ -66,9 +63,6 @@
                     <a name="{{ $weekday->format('d-m-Y') }}H{{ $timeslots[$i]->school_hour }}"></a>
                     <div class="card-body">
                         <h4 class="card-title"><strong>{{ $timeslots[$i]->school_hour }}<sup>e</sup> uur</strong></h4>
-                        <!-- <h6 class="card-subtitle mb-2 text-muted">
-                            {{ $timeslots[$i]->starttime }} - {{ $timeslots[$i]->endtime }}
-                        </h6> -->
                         <div class="card-text">
                                 @if(($results = $timeslots[$i]->tasks->where('date', $weekday->format('d-m-Y'))->where('accepted', '>=', 1)) AND $results->count() !== 0)
                                     @foreach($results as $result)
@@ -88,12 +82,24 @@
                                             @endphp
 
                                             <strong> {{ $result->title }} </strong>
+                                                @if ($result->attachment)
+                                                    <i class="fa fa-paperclip" aria-hidden="true"></i>
+                                                @endif
                                         </span>
                                         <div id="desc{{ $result->id }}" class="highlight" style="font-size:0.9rem; display:none;">
                                             @markdown
                                                 {{ $result->body }}
                                             @endmarkdown
-                                            <small>{{ $result->class }} | {{ $result->location }} | {{ $result->user->name }} | {{ $result->type }}</small>
+                                            <small>
+                                            {{ $result->class }} |
+                                            {{ $result->location }} |
+                                            {{ $result->user->name }} |
+                                            {{ $result->type }}
+                                            @if ($result->attachment)
+                                            <i style="cursor:pointer;" onclick="copyToken()" class="fa fa-paperclip" aria-hidden="true"></i>
+                                            <input type="text" id="attachment_token" value="{{ $result->attachment }}">
+                                            @endif
+                                            </small>
                                             @if($activeLink == true)
                                                 @if(auth()->user()->id === $result->user->id)
                                                     <br><small><a class="text-danger" href="/aanvraag/{{ $result->id }}/bewerken">Bewerken</a></small>
@@ -129,6 +135,14 @@
 
 @section('scripts')
     <script>
+
+        function copyToken() {
+            var copyText = document.getElementById("attachment_token");
+            copyText.select();
+            document.execCommand("Copy");
+            alert("Gekopieerd.");
+        }
+
         $(document).ready(function () {
 
          $(".title").click(function(){
@@ -141,7 +155,6 @@
 
          $(".card-title").mousedown(function(e){ e.preventDefault(); });
          $(".title").mousedown(function(e){ e.preventDefault(); });
-
 
         });
     </script>

@@ -51,7 +51,7 @@
                     <input type="checkbox" name="repeat" id="repeat" onclick="Repeat()">
                     <div id="repeat-div" style="display: inline-block; display:none;">
                      Deze afspraak nog
-                      &nbsp; <select name="repeatby" id="repeatby" class="form-control" style="width: 50px; display:inline-block;">
+                      &nbsp; <select name="repeatby" id="repeatby" class="form-control" style="width:90px; display:inline-block;">
                         <option value="">...</option>
                         @for($i = 1; $i <= 10; $i++)
                           <option value="{{ $i }}">{{ $i }}</option>

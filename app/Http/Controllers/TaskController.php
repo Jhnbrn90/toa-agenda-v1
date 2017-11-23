@@ -133,6 +133,11 @@ public function filter(string $date = 'now')
 
             for($i = 0; $i <= $timesToRepeat; $i++) {
                 $multiTask = new Task();
+
+                if($filepath !== null) {
+                    $multiTask->attachment = trim($filepath[0], 'attachments/');
+                }
+
                 $multiTask->date = Carbon::parse($request->date)->addWeeks($i)->format('d-m-Y');
                 $multiTask->timetable_id = $request->timetable_id;
                 $multiTask->title = $request->title . ' ('.($i+1).'/'.($timesToRepeat+1).')';
@@ -163,8 +168,28 @@ public function filter(string $date = 'now')
 
         } else {
 
+            // $task = $user->submit(
+            //     new Task(request(['date', 'timetable_id', 'title', 'body', 'type', 'class', 'subject', 'location']))
+            // );
+
+            if($filepath !== null) {
+                $attachment_name = trim($filepath[0], 'attachments/');
+            } else {
+                $attachment_name = null;
+            }
+
             $task = $user->submit(
-                new Task(request(['date', 'timetable_id', 'title', 'body', 'type', 'class', 'subject', 'location']))
+                new Task([
+                    'date'          => $request->date,
+                    'timetable_id'  => $request->timetable_id,
+                    'title'         => $request->title,
+                    'body'          => $request->body,
+                    'type'          => $request->type,
+                    'class'         => $request->class,
+                    'subject'       => $request->subject,
+                    'location'      => $request->location,
+                    'attachment'    => $attachment_name,
+                ])
             );
 
             if($user->is_admin == 1) {

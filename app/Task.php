@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
-    protected $fillable = ['date', 'timetable_id', 'title', 'body', 'type', 'class', 'subject', 'location'];
+    protected $guarded = [];
 
     public function user()
     {
