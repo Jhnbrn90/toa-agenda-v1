@@ -159,8 +159,10 @@ public function filter(string $date = 'now')
             $task['body'] = $request->body;
             $actionURL = env('APP_URL').'/admin/taskset/'.$setId;
 
-            Mail::to(env('APP_ADMIN_EMAIL'))
-                ->later(3, new NewMultiTaskRequest($user, $task, $time, $day, $filepath, $actionURL));
+            if(! $user->is_admin == 1) {
+                Mail::to(env('APP_ADMIN_EMAIL'))
+                    ->later(3, new NewMultiTaskRequest($user, $task, $time, $day, $filepath, $actionURL));
+            }
 
             session()->flash('message', 'Aanvraag is succesvol ingediend.');
 
@@ -199,8 +201,10 @@ public function filter(string $date = 'now')
 
             $actionURL = env('APP_URL').'/admin/task/'.$task->id;
 
-            Mail::to(env('APP_ADMIN_EMAIL'))
-                ->later(3, new NewTaskRequest($user, $task, $actionURL, $time, $day, $filepath));
+            if(! $user->is_admin == 1) {
+                Mail::to(env('APP_ADMIN_EMAIL'))
+                    ->later(3, new NewTaskRequest($user, $task, $actionURL, $time, $day, $filepath));
+            }
 
             session()->flash('message', 'Aanvraag succesvol ingediend');
 
