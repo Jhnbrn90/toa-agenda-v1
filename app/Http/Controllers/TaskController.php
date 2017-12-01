@@ -262,7 +262,6 @@ public function filter(string $date = 'now')
 
         $date = Carbon::parse(request('date'))->startOfWeek()->format('d-m-Y');
 
-        // send an e-mail to the site-admin
         $actionURL = env('APP_URL').'/admin/task/'.$task->id;
 
         // format the date and time
@@ -271,8 +270,11 @@ public function filter(string $date = 'now')
 
         // upload files and send email
         $filepath = (new AttachmentHandler($request))->uploadAttachment();
-        Mail::to(env('APP_ADMIN_EMAIL'))
-            ->later(5, new EditedTask($user, $task, $actionURL, $time, $day, $filepath));
+
+        if (! $user->is_admin == 1) {
+            Mail::to(env('APP_ADMIN_EMAIL'))
+                ->later(5, new EditedTask($user, $task, $actionURL, $time, $day, $filepath));
+        }
 
     // redirect user with success flash
         session()->flash('message', 'Wijzigingen zijn opgeslagen.');
@@ -306,8 +308,10 @@ public function filter(string $date = 'now')
         $user_vars['email'] = $user->email;
 
         //let the admin know this task was deleted
-        Mail::to(env('APP_ADMIN_EMAIL'))
-            ->later(5, new DeletedTask($task_vars, $user_vars, $date, $time));
+        if (! $user->is_admin == 1) {
+            Mail::to(env('APP_ADMIN_EMAIL'))
+                ->later(5, new DeletedTask($task_vars, $user_vars, $date, $time));
+        }
 
         $date = Carbon::parse($task->date)->startOfWeek()->format('d-m-Y');
 
