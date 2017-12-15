@@ -20,7 +20,6 @@ class NewTaskRequest extends Mailable
     public $day;
     public $filepath;
 
-
     public function __construct(User $user, Task $task, $actionURL, $time, $day, $filepath)
     {
         $this->user = $user;
@@ -47,7 +46,8 @@ class NewTaskRequest extends Mailable
             ->markdown('emails.newtask');
 
             foreach($this->filepath as $file) {
-                $email->attach('storage/app/'.$file);
+                $email->attach(storage_path().'/app/'.$file);
+
             }
 
         } else {

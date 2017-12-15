@@ -51,7 +51,7 @@ class EditedTask extends Mailable
             ->markdown('emails.editedtask');
 
             foreach($this->filepath as $file) {
-                $email->attach('storage/app/'.$file);
+                $email->attach(storage_path().'/app/'.$file);
             }
 
         } else {
