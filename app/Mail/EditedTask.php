@@ -46,7 +46,7 @@ class EditedTask extends Mailable
         if($this->filepath !== null) {
             $email = $this
             ->subject('[Bewerkt] '.$this->task->title.' (bijlage)')
-            ->from($this->user->email, $this->user->name)
+            ->from(env('MAIL_FROM_ADDRESS'), $this->user->name)
             ->replyTo($this->user->email, $this->user->name)
             ->markdown('emails.editedtask');
 

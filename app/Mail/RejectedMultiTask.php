@@ -40,7 +40,7 @@ class RejectedMultiTask extends Mailable
     {
         $email = $this
             ->subject('[Geweigerd] ' . $this->title)
-            ->from(env('APP_ADMIN_EMAIL'), env('APP_ADMIN_NAME'))
+            ->from(env('MAIL_FROM_ADDRESS'), env('APP_ADMIN_NAME'))
             ->replyTo(env('APP_ADMIN_EMAIL'), env('APP_ADMIN_NAME'))
             ->markdown('emails.rejectedmultitask');
 

@@ -41,7 +41,7 @@ class DeletedTask extends Mailable
     {
         $email = $this
         ->subject('[Verwijderd] ' . $this->task['title'])
-        ->from($this->user['email'], $this->user['name'])
+        ->from(env('MAIL_FROM_ADDRESS'), $this->user['name'])
         ->replyTo($this->user['email'], $this->user['name'])
         ->markdown('emails.deleted-task');
 

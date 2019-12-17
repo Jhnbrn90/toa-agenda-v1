@@ -53,7 +53,7 @@ class NewTaskRequest extends Mailable
         } else {
             $email = $this
             ->subject('[Nieuw verzoek] '.$this->task->title)
-            ->from($this->user->email, $this->user->name)
+            ->from(env('MAIL_FROM_ADDRESS'), $this->user->name)
             ->replyTo($this->user->email, $this->user->name)
             ->markdown('emails.newtask');
         }
